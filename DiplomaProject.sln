@@ -1,6 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject", "DiplomaProject\DiplomaProject.csproj", "{67F7B811-B402-4506-A463-61FFA241A254}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject.WebApi", "DiplomaProject.WebApi\DiplomaProject.WebApi.csproj", "{67F7B811-B402-4506-A463-61FFA241A254}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject.Infrastructure.Persistence", "DiplomaProject.Infrastructure.Persistence\DiplomaProject.Infrastructure.Persistence.csproj", "{AF3E6803-1CEF-43C8-B434-17312615964E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject.Infrastructure.Shared", "DiplomaProject.Infrastructure.Shared\DiplomaProject.Infrastructure.Shared.csproj", "{1292142F-F0B4-4E30-B6E5-09DFAB30A9F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject.Domain", "DiplomaProject.Domain\DiplomaProject.Domain.csproj", "{E52AB7E9-C9FC-4CBD-9E8A-52AD832578AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject.Application", "DiplomaProject.Application\DiplomaProject.Application.csproj", "{5D623E00-69E8-4E84-AD25-7CA36CDC884B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiplomaProject.Packages", "DiplomaProject.Packages\DiplomaProject.Packages.csproj", "{FE507340-AF75-4D35-B939-C2C78EF26151}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +22,25 @@ Global
 		{67F7B811-B402-4506-A463-61FFA241A254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67F7B811-B402-4506-A463-61FFA241A254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67F7B811-B402-4506-A463-61FFA241A254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF3E6803-1CEF-43C8-B434-17312615964E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF3E6803-1CEF-43C8-B434-17312615964E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF3E6803-1CEF-43C8-B434-17312615964E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF3E6803-1CEF-43C8-B434-17312615964E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1292142F-F0B4-4E30-B6E5-09DFAB30A9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1292142F-F0B4-4E30-B6E5-09DFAB30A9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1292142F-F0B4-4E30-B6E5-09DFAB30A9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1292142F-F0B4-4E30-B6E5-09DFAB30A9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E52AB7E9-C9FC-4CBD-9E8A-52AD832578AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E52AB7E9-C9FC-4CBD-9E8A-52AD832578AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E52AB7E9-C9FC-4CBD-9E8A-52AD832578AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E52AB7E9-C9FC-4CBD-9E8A-52AD832578AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D623E00-69E8-4E84-AD25-7CA36CDC884B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D623E00-69E8-4E84-AD25-7CA36CDC884B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D623E00-69E8-4E84-AD25-7CA36CDC884B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D623E00-69E8-4E84-AD25-7CA36CDC884B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE507340-AF75-4D35-B939-C2C78EF26151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE507340-AF75-4D35-B939-C2C78EF26151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE507340-AF75-4D35-B939-C2C78EF26151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE507340-AF75-4D35-B939-C2C78EF26151}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
