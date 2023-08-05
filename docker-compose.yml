@@ -1,0 +1,6 @@
+﻿services:
+  diplomaproject.webapi:
+    image: diplomaproject.webapi
+    build:
+      context: .
+      dockerfile: DiplomaProject.WebApi/Dockerfile
