@@ -1,4 +1,4 @@
-using DiplomaProject.Domain.Exceptions;
+using DiplomaProject.Application.Exceptions;
 
 namespace DiplomaProject.WebApi.Middlewares;
 
@@ -35,6 +35,20 @@ public class ErrorHandlerMiddleware
                     await InvokeException(
                         context,
                         HttpStatusCode.BadRequest,
+                        e.Message);
+                    break;
+                case BadRequestException e:
+                    _logger.LogError(e,e.Message);
+                    await InvokeException(
+                        context,
+                        HttpStatusCode.BadRequest,
+                        e.Message);
+                    break;
+                case NotFoundException e:
+                    _logger.LogWarning(e.Message);
+                    await InvokeException(
+                        context,
+                        HttpStatusCode.NotFound,
                         e.Message);
                     break;
                 default:

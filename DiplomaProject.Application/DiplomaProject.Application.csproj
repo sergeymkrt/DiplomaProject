@@ -21,8 +21,7 @@
 
 
     <ItemGroup>
-      <Folder Include="DTOs\" />
-      <Folder Include="UseCases\" />
+      <Folder Include="UseCases\Authentication\Queries\" />
     </ItemGroup>
 
 </Project>
