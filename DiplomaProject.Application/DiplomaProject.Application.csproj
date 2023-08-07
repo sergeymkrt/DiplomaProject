@@ -20,8 +20,5 @@
 
 
 
-    <ItemGroup>
-      <Folder Include="UseCases\Authentication\Queries\" />
-    </ItemGroup>
 
 </Project>

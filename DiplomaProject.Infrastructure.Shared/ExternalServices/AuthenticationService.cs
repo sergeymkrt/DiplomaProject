@@ -26,8 +26,8 @@ public class AuthenticationService : IAuthenticationService
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Name, user.Name),
-            new(ClaimTypes.Surname, user.SurName),
+            new(ClaimTypes.Name, user.Name ?? String.Empty),
+            new(ClaimTypes.Surname, user.SurName ?? String.Empty),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         

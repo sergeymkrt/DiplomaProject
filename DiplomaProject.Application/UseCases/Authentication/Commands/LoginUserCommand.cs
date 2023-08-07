@@ -30,7 +30,7 @@ public class LoginUserCommand : BaseCommand<string>
 
         public override async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(request.DTO.Username);
+            var user = await _userManager.FindByNameAsync(request.DTO.UserName);
             if (user is null)
             {
                 throw new NotFoundException("User not found");

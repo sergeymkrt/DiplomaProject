@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Autofac" Version="7.0.1" />
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="11.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
@@ -32,5 +33,7 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+
 
 </Project>

@@ -18,6 +18,10 @@ public class ApplicationModule: Autofac.Module
             .As<IIdentityUserService>()
             .InstancePerLifetimeScope();
         
+        builder.RegisterType<AuthenticationService>()
+            .As<IAuthenticationService>()
+            .InstancePerLifetimeScope();
+        
         builder.RegisterType<DbInitializer>()
             .As<IDbInitializer>()
             .InstancePerLifetimeScope();

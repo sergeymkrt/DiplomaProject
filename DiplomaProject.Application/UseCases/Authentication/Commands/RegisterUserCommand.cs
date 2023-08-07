@@ -3,6 +3,7 @@ using DiplomaProject.Application.Exceptions;
 using DiplomaProject.Domain.Entities.User;
 using DiplomaProject.Domain.Services.External;
 using Microsoft.AspNetCore.Identity;
+using Role = DiplomaProject.Domain.Enums.Role;
 
 namespace DiplomaProject.Application.UseCases.Authentication.Commands;
 
@@ -31,6 +32,7 @@ public class RegisterUserCommand : BaseCommand<bool>
             var result = await _userManager.CreateAsync(user, request.DTO.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRolesAsync(user,new List<string> { Role.USER.ToString("F")} );
                 return true;
             }
             throw new BadRequestException(result.Errors.First().Description);

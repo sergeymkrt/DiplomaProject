@@ -1,7 +1,7 @@
 namespace DiplomaProject.WebApi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public abstract class BaseController: ControllerBase
 {
     protected readonly IMediator _mediator;

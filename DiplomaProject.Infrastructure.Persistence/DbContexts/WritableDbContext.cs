@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DiplomaProject.Infrastructure.Persistence.DbContexts;
 
-public abstract class WritableDbContext : IdentityDbContext<User>, IUnitOfWork
+public abstract class WritableDbContext : IdentityDbContext<User,Role,string>, IUnitOfWork
 {
     private readonly IMediator _mediator;
     private IDbContextTransaction? _currentTransaction;
