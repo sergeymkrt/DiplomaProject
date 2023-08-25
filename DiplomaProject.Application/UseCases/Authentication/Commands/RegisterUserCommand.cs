@@ -9,12 +9,12 @@ namespace DiplomaProject.Application.UseCases.Authentication.Commands;
 
 public class RegisterUserCommand : BaseCommand<bool>
 {
-    public RegisterUserCommand(AuthUserDTO dto)
+    public RegisterUserCommand(RegisterUserDTO dto)
     {
         DTO = dto;
     }
 
-    public AuthUserDTO DTO { get; set; }
+    public RegisterUserDTO DTO { get; set; }
     
     public class RegisterUserCommandHandler : BaseCommandHandler<RegisterUserCommand>
     {

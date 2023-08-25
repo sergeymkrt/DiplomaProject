@@ -1,7 +1,6 @@
 using DiplomaProject.Application.DTOs.Authentication;
 using DiplomaProject.Application.UseCases.Authentication.Commands;
 using DiplomaProject.Application.UseCases.Authentication.Queries;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
@@ -19,11 +18,10 @@ public class AuthenticationController : BaseController
     {
         var token = await _mediator.Send(new LoginUserCommand(loginUser));
         var tokenExpiration = int.Parse(_configuration["Jwt:AccessTokenValidityInHours"]);
-        Response.Cookies.Delete("authorization");
         Response.Cookies.Append("authorization", token, new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Secure = true,
             IsEssential = true,
             Expires = DateTime.Now.AddHours(tokenExpiration),
@@ -35,12 +33,19 @@ public class AuthenticationController : BaseController
     [HttpDelete("logout")]
     public async Task<IActionResult> Logout()
     {
-        Response.Cookies.Delete("authorization");
+        Response.Cookies.Delete("authorization", new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.None,
+            Secure = true,
+            IsEssential = true,
+            Path = "/"
+        });
         return Ok();
     }
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register(AuthUserDTO registerUser)
+    public async Task<IActionResult> Register(RegisterUserDTO registerUser)
     {
         return Ok(await _mediator.Send(new RegisterUserCommand(registerUser)));
     }
@@ -50,5 +55,18 @@ public class AuthenticationController : BaseController
     public async Task<IActionResult> GetUser()
     {
         return Ok(await _mediator.Send(new GetUserQuery()));
+    }
+    
+    [HttpDelete("deleteUser")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        return Ok(await _mediator.Send(new DeleteUserCommand(id)));
+    }
+    
+    [Authorize]
+    [HttpGet("isAuthenticated")]
+    public async Task<IActionResult> IsAuthenticated()
+    {
+        return Ok();
     }
 }

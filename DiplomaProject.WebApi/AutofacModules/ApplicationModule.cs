@@ -1,7 +1,5 @@
-using DiplomaProject.Application.Interfaces;
-using DiplomaProject.Domain.Services.External;
-using DiplomaProject.Infrastructure.Persistence.InitialDataSeeding;
-using DiplomaProject.Infrastructure.Shared.ExternalServices;
+using DiplomaProject.Domain.Services.Encryption;
+using DiplomaProject.Infrastructure.Shared.Encryption;
 
 namespace DiplomaProject.WebApi.AutofacModules;
 
@@ -20,6 +18,10 @@ public class ApplicationModule: Autofac.Module
         
         builder.RegisterType<AuthenticationService>()
             .As<IAuthenticationService>()
+            .InstancePerLifetimeScope();
+        
+        builder.RegisterType<EncryptionService>()
+            .As<IEncryptionService>()
             .InstancePerLifetimeScope();
         
         builder.RegisterType<DbInitializer>()

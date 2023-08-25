@@ -17,5 +17,15 @@
       <PackageReference Include="Quartz.Extensions.Hosting" Version="3.7.0" />
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
     </ItemGroup>
-
+    <ItemGroup>
+        <None Include="Encryption/libEncryption.dylib">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <Target Name="ConfigureCMake" BeforeTargets="Build">
+        <Exec Command="cmake -B ./Encryption/build -S ./Encryption" />
+    </Target>
+    <Target Name="BuildCMake" AfterTargets="ConfigureCMake">
+        <Exec Command="cmake --build ./Encryption/build" />
+    </Target>
 </Project>
