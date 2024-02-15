@@ -1,6 +1,6 @@
 namespace DiplomaProject.Domain.Services.External;
 
-public interface IIdentityUserService
+public interface ICurrentUser
 {
     string Id { get; }
     string FirstName { get; }

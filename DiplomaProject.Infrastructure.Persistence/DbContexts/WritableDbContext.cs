@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DiplomaProject.Infrastructure.Persistence.DbContexts;
 
-public abstract class WritableDbContext : IdentityDbContext<User,Role,string>, IUnitOfWork
+public abstract class WritableDbContext : IdentityDbContext<User, Role, string>, IUnitOfWork
 {
     private readonly IMediator _mediator;
     private IDbContextTransaction? _currentTransaction;
-    private readonly IIdentityUserService _identityUser;
+    private readonly ICurrentUser CurrentUser;
 
     protected WritableDbContext() { }
 
@@ -16,10 +16,10 @@ public abstract class WritableDbContext : IdentityDbContext<User,Role,string>, I
     protected WritableDbContext(
         DbContextOptions options,
         IMediator mediator,
-        IIdentityUserService identityUser) : base(options)
+        ICurrentUser currentUser) : base(options)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _identityUser = identityUser ?? throw new ArgumentNullException(nameof(identityUser));
+        CurrentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
     }
 
     public IDbContextTransaction? GetCurrentTransaction() => _currentTransaction;
@@ -57,7 +57,7 @@ public abstract class WritableDbContext : IdentityDbContext<User,Role,string>, I
                 // pass
                 // post domain events should not affect on transaction
             }
-            
+
         }
         catch
         {
@@ -97,8 +97,8 @@ public abstract class WritableDbContext : IdentityDbContext<User,Role,string>, I
         var addedEntries = ChangeTracker.Entries().Where(p => p.State == EntityState.Added).ToList();
         var modifiedEntries = ChangeTracker.Entries().Where(p => p.State == EntityState.Modified).ToList();
 
-        SetCreators(addedEntries, _identityUser.Email);
-        SetModifiers(modifiedEntries, _identityUser.Email);
+        SetCreators(addedEntries, CurrentUser.Email);
+        SetModifiers(modifiedEntries, CurrentUser.Email);
 
         var res = await base.SaveChangesAsync(cancellationToken);
 

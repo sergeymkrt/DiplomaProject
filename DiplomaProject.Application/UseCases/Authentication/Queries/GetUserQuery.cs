@@ -8,23 +8,12 @@ namespace DiplomaProject.Application.UseCases.Authentication.Queries;
 
 public class GetUserQuery : BaseQuery<UserDTO>
 {
-    public GetUserQuery()
+    public class GetUserQueryHandler(IMapper mapper, ICurrentUser currentUser, UserManager<User> userManager)
+        : BaseQueryHandler<GetUserQuery>(mapper, currentUser)
     {
-    }
-    
-    public class GetUserQueryHandler : BaseQueryHandler<GetUserQuery>
-    {
-        private readonly UserManager<User> _userManager;
-        
-        public GetUserQueryHandler(IMapper mapper, IIdentityUserService identityUser, UserManager<User> userManager) 
-            : base(mapper, identityUser)
-        {
-            _userManager = userManager;
-        }
-
         public override async Task<UserDTO> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(IdentityUserService.Id);
+            var user = await userManager.FindByIdAsync(CurrentUser.Id);
             if (user is null)
             {
                 Console.WriteLine("User not found");

@@ -12,7 +12,7 @@ public class AuthenticationController : BaseController
     {
         _configuration = configuration;
     }
-    
+
     [HttpPost("login")]
     public async Task<IActionResult> Login(AuthUserDTO loginUser)
     {
@@ -29,7 +29,7 @@ public class AuthenticationController : BaseController
         });
         return Ok();
     }
-    
+
     [HttpDelete("logout")]
     public async Task<IActionResult> Logout()
     {
@@ -43,30 +43,36 @@ public class AuthenticationController : BaseController
         });
         return Ok();
     }
-    
+
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserDTO registerUser)
     {
         return Ok(await _mediator.Send(new RegisterUserCommand(registerUser)));
     }
-    
-    [Authorize]
-    [HttpGet("getUser")]
-    public async Task<IActionResult> GetUser()
-    {
-        return Ok(await _mediator.Send(new GetUserQuery()));
-    }
-    
+
     [HttpDelete("deleteUser")]
     public async Task<IActionResult> DeleteUser(string id)
     {
         return Ok(await _mediator.Send(new DeleteUserCommand(id)));
     }
-    
+
+    [HttpGet("GenerateStrongPassword")]
+    public async Task<IActionResult> GenerateStrongPassword()
+    {
+        return Ok(await _mediator.Send(new GenerateStrongPasswordQuery()));
+    }
+
     [Authorize]
     [HttpGet("isAuthenticated")]
     public async Task<IActionResult> IsAuthenticated()
     {
         return Ok();
+    }
+
+    [Authorize]
+    [HttpGet("getUser")]
+    public async Task<IActionResult> GetUser()
+    {
+        return Ok(await _mediator.Send(new GetUserQuery()));
     }
 }

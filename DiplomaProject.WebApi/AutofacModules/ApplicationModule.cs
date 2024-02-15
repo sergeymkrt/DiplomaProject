@@ -3,7 +3,7 @@ using DiplomaProject.Infrastructure.Shared.Encryption;
 
 namespace DiplomaProject.WebApi.AutofacModules;
 
-public class ApplicationModule: Autofac.Module
+public class ApplicationModule : Autofac.Module
 {
     public ApplicationModule()
     {
@@ -12,18 +12,18 @@ public class ApplicationModule: Autofac.Module
     protected override void Load(ContainerBuilder builder)
     {
         #region Services
-        builder.RegisterType<IdentityUserService>()
-            .As<IIdentityUserService>()
+        builder.RegisterType<CurrentUser>()
+            .As<ICurrentUser>()
             .InstancePerLifetimeScope();
-        
+
         builder.RegisterType<AuthenticationService>()
             .As<IAuthenticationService>()
             .InstancePerLifetimeScope();
-        
+
         builder.RegisterType<EncryptionService>()
             .As<IEncryptionService>()
             .InstancePerLifetimeScope();
-        
+
         builder.RegisterType<DbInitializer>()
             .As<IDbInitializer>()
             .InstancePerLifetimeScope();
