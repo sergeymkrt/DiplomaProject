@@ -73,7 +73,7 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddSqlServerDbContext<WritableDbContext>(configuration.GetConnectionString("DefaultConnection"));
+        services.AddSqlServerDbContext(configuration.GetConnectionString("DefaultConnection"), true);
 
         services.AddIdentity<User, Role>()
             .AddRoles<Role>()
@@ -134,8 +134,17 @@ public static class ConfigureServices
                 };
             });
 
-        services.AddAuthorization(options =>
-            options.AddPolicy("CanPurge", policy => policy.RequireRole(Domain.Enums.Role.ADMIN.ToString("F"))));
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequiredLength = 12;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireUppercase = true;
+        });
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy("CanPurge", policy => policy.RequireRole(Domain.Enums.Role.ADMIN.ToString("F")));
 
         return services;
     }

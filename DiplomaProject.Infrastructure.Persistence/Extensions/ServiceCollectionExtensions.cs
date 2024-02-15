@@ -18,13 +18,13 @@ public static class ServiceCollectionExtensions
     /// Whether to allow logging. Should be enabled in Development only to avoid incurring performance issues.
     /// </param>
     /// <returns>The services collection container to supported chaining.</returns>
-    public static IServiceCollection AddSqlServerDbContext<TContext>(
+    public static IServiceCollection AddSqlServerDbContext(
         this IServiceCollection services,
-        string connectionString, bool enableLogging = false) where TContext : DbContext
+        string connectionString, bool enableLogging = false)
     {
         if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentNullException(nameof(connectionString), @"Connection string cannot be empty");
 
-        services.AddDbContext<TContext>(options =>
+        services.AddDbContext<WritableDbContext, AppContext>(options =>
         {
             options.UseSqlServer(
                 connectionString,
