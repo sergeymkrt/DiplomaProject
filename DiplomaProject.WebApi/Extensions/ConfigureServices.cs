@@ -1,10 +1,11 @@
-using System.Security.Cryptography;
 using DiplomaProject.Application.Extensions;
 using DiplomaProject.Domain.Entities.User;
+using DiplomaProject.Infrastructure.Persistence.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Cryptography;
 
 namespace DiplomaProject.WebApi.Extensions;
 
@@ -15,12 +16,12 @@ public static class ConfigureServices
         services.AddHttpContextAccessor();
         services.AddHealthChecks();
         services.AddControllers();
-        
+
         services.AddEndpointsApiExplorer();
-        
+
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1",new OpenApiInfo{Title="DiplomaProject",Version = "v1"});
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "DiplomaProject", Version = "v1" });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
                 Name = "Authorization",
@@ -45,7 +46,7 @@ public static class ConfigureServices
                 }
             });
         });
-        
+
         services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy",
@@ -54,17 +55,17 @@ public static class ConfigureServices
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
-            
+
             options.AddPolicy("Production",
                 builder => builder
                     .WithOrigins("https://diploma-project-frontend.azurewebsites.net")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
-            
+
             options.DefaultPolicyName = "CorsPolicy";
         });
-        
+
 
         return services;
     }
@@ -72,12 +73,7 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<WritableDbContext, AppContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                sqlServerOptionsAction: sqlOptions =>
-                {
-                    sqlOptions.MigrationsAssembly(typeof(AppContext).GetTypeInfo().Assembly.GetName().Name);
-                }));
+        services.AddSqlServerDbContext<WritableDbContext>(configuration.GetConnectionString("DefaultConnection"));
 
         services.AddIdentity<User, Role>()
             .AddRoles<Role>()
@@ -98,7 +94,7 @@ public static class ConfigureServices
         IConfiguration configuration)
     {
         services.AddMapster();
-        
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -113,10 +109,10 @@ public static class ConfigureServices
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
-        
+
                 var securityKey = new ECDsaSecurityKey(ECDsa.Create(ECCurve.NamedCurves.nistP521));
                 securityKey.ECDsa.ImportFromPem(configuration["JWT:PrivateKey"]);
-                
+
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
@@ -137,10 +133,10 @@ public static class ConfigureServices
                     }
                 };
             });
-        
+
         services.AddAuthorization(options =>
             options.AddPolicy("CanPurge", policy => policy.RequireRole(Domain.Enums.Role.ADMIN.ToString("F"))));
-        
+
         return services;
     }
 }

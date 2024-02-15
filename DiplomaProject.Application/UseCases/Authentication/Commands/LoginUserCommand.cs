@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DiplomaProject.Application.UseCases.Authentication.Commands;
 
-public class LoginUserCommand(AuthUserDTO dto) : BaseCommand<string>
+public class LoginUserCommand(AuthUserDto dto) : BaseCommand<string>
 {
-    public AuthUserDTO DTO { get; set; } = dto;
+    public AuthUserDto DTO { get; set; } = dto;
 
     public class LoginUserCommandHandler(
         IMapper mapper,

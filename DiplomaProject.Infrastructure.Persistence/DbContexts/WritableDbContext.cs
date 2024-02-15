@@ -11,6 +11,7 @@ public abstract class WritableDbContext : IdentityDbContext<User, Role, string>,
 
     protected WritableDbContext() { }
 
+    /// <inheritdoc />
     protected WritableDbContext(DbContextOptions options) : base(options) { }
 
     protected WritableDbContext(

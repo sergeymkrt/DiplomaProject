@@ -33,7 +33,7 @@ public abstract class BaseQueryRepository<TEntity> : IQueryRepository<TEntity> w
         int pageSize = 10)
     {
         var query = BuildQuery(predicate: predicate, include: include);
-        return await query.ToPaginateAsync(pageNumber,pageSize);
+        return await query.ToPaginateAsync(pageNumber, pageSize);
     }
 
     private IQueryable<TEntity>? BuildQuery(

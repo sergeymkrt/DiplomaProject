@@ -1,4 +1,5 @@
 using DiplomaProject.Application;
+using DiplomaProject.Infrastructure.Persistence.Extensions;
 using DiplomaProject.WebApi.Extensions;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
@@ -27,7 +28,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(b => b
 // ========================================= Configure the HTTP request pipeline ============================================ //
 var app = builder.Build();
 
-await SeedInitialDataAsync(app);
+await app.UseDatabaseMigration();
+await app.UseInitialDataSeeding();
 
 app.UseGlobalExceptionHandler();
 
@@ -48,12 +50,3 @@ app.UseAuthorization();
 app.MapControllers();
 await app.RunAsync();
 
-
-static async Task SeedInitialDataAsync(WebApplication webApp)
-{
-    var scopeFactory = webApp.Services.GetRequiredService<IServiceScopeFactory>();
-    using var scope = scopeFactory.CreateScope();
-    var dbInitializer = scope.ServiceProvider.GetService<IDbInitializer>();
-
-    await dbInitializer.SeedAsync();
-}

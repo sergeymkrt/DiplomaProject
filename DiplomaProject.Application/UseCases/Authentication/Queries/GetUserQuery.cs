@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DiplomaProject.Application.UseCases.Authentication.Queries;
 
-public class GetUserQuery : BaseQuery<UserDTO>
+public class GetUserQuery : BaseQuery<UserDto>
 {
     public class GetUserQueryHandler(IMapper mapper, ICurrentUser currentUser, UserManager<User> userManager)
         : BaseQueryHandler<GetUserQuery>(mapper, currentUser)
     {
-        public override async Task<UserDTO> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public override async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByIdAsync(CurrentUser.Id);
             if (user is null)
@@ -20,7 +20,7 @@ public class GetUserQuery : BaseQuery<UserDTO>
                 throw new NotFoundException("User not found");
             }
 
-            return Mapper.Map<UserDTO>(user);
+            return Mapper.Map<UserDto>(user);
         }
     }
 }

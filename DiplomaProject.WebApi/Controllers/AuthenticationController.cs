@@ -14,7 +14,7 @@ public class AuthenticationController : BaseController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(AuthUserDTO loginUser)
+    public async Task<IActionResult> Login(AuthUserDto loginUser)
     {
         var token = await _mediator.Send(new LoginUserCommand(loginUser));
         var tokenExpiration = int.Parse(_configuration["Jwt:AccessTokenValidityInHours"]);
@@ -31,7 +31,7 @@ public class AuthenticationController : BaseController
     }
 
     [HttpDelete("logout")]
-    public async Task<IActionResult> Logout()
+    public Task<IActionResult> Logout()
     {
         Response.Cookies.Delete("authorization", new CookieOptions
         {
@@ -41,7 +41,7 @@ public class AuthenticationController : BaseController
             IsEssential = true,
             Path = "/"
         });
-        return Ok();
+        return Task.FromResult<IActionResult>(Ok());
     }
 
     [HttpPost("register")]
@@ -64,9 +64,9 @@ public class AuthenticationController : BaseController
 
     [Authorize]
     [HttpGet("isAuthenticated")]
-    public async Task<IActionResult> IsAuthenticated()
+    public Task<IActionResult> IsAuthenticated()
     {
-        return Ok();
+        return Task.FromResult<IActionResult>(Ok());
     }
 
     [Authorize]

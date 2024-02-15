@@ -36,7 +36,7 @@ public class AuthenticationService : IAuthenticationService
         var securityKey = new ECDsaSecurityKey(ECDsa.Create(ECCurve.NamedCurves.nistP521));
         securityKey.ECDsa.ImportFromPem(_configuration["JWT:PrivateKey"]);
 
-        var accessTokenHours = int.Parse(_configuration["JWT:AccessTokenValidityInHours"]);
+        var accessTokenHours = int.Parse(_configuration["JWT:AccessTokenValidityInHours"] ?? throw new InvalidOperationException());
 
         var token = new JwtSecurityToken(
             _configuration["JWT:ValidIssuer"],
