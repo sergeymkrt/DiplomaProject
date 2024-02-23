@@ -48,5 +48,12 @@ else
 // app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("./swagger", permanent: false);
+    return Task.CompletedTask;
+});
+
 await app.RunAsync();
 
