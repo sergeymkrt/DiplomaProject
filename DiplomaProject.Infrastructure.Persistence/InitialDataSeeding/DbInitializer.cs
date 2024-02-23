@@ -11,7 +11,7 @@ public class DbInitializer : IDbInitializer
 
     public async Task SeedAsync()
     {
-        await _context.Database.MigrateAsync();
+        // await _context.Database.MigrateAsync();
 
         await _context.SeedRolesAsync();
     }
