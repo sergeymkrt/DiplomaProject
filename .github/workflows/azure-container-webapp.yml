@@ -27,7 +27,7 @@
 name: Build and deploy a container to an Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: diploma-api  # set this to the name of your Azure Web App
+  AZURE_WEBAPP_NAME: diploma-project-api  # set this to the name of your Azure Web App
 
 on:
   push:
@@ -79,7 +79,7 @@ jobs:
     steps:
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
+        
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
