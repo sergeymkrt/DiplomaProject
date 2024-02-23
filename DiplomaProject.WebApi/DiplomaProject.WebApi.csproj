@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>DiplomaProject.WebApi</RootNamespace>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>dc804f9c-1844-4d4c-90ab-fc72aa818199</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
