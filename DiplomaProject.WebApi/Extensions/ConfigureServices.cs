@@ -58,7 +58,8 @@ public static class ConfigureServices
 
             options.AddPolicy("Production",
                 builder => builder
-                    .WithOrigins("https://diploma-project-frontend.azurewebsites.net")
+                    // .WithOrigins("https://diploma-project-frontend.azurewebsites.net")
+                    .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());

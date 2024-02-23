@@ -33,10 +33,11 @@ await app.UseInitialDataSeeding();
 
 app.UseGlobalExceptionHandler();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
     app.UseCors();
 }
 else
