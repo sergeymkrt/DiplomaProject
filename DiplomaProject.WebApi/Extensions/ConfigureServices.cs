@@ -75,7 +75,7 @@ public static class ConfigureServices
     {
         var connectionsString = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ?
             configuration.GetConnectionString("DefaultConnection")
-            : Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection");
+            : Environment.GetEnvironmentVariable("SQLAZURECONNSTR");
 
         services.AddSqlServerDbContext(connectionsString, true);
 
