@@ -73,7 +73,11 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddSqlServerDbContext(configuration.GetConnectionString("DefaultConnection"), true);
+        var connectionsString = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ?
+            configuration.GetConnectionString("DefaultConnection")
+            : Environment.GetEnvironmentVariable("SQLAZURECONNSTR_DefaultConnection");
+
+        services.AddSqlServerDbContext(connectionsString, true);
 
         services.AddIdentity<User, Role>()
             .AddRoles<Role>()
