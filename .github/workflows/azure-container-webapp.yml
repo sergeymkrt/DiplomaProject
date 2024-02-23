@@ -63,6 +63,8 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./DiplomaProject.WebApi/Dockerfile
+        env:
+          DEBUG: true
 
   deploy:
     permissions:
