@@ -1,6 +1,7 @@
 using DiplomaProject.Application.Extensions;
 using DiplomaProject.Domain.Entities.User;
 using DiplomaProject.Infrastructure.Persistence.Extensions;
+using DiplomaProject.Infrastructure.Shared.Configs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -150,6 +151,18 @@ public static class ConfigureServices
 
         services.AddAuthorizationBuilder()
             .AddPolicy("CanPurge", policy => policy.RequireRole(Domain.Enums.Role.ADMIN.ToString("F")));
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureExternalServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddOptions();
+
+        services.Configure<JwtConfig>(configuration.GetSection("JWT"));
+        services.Configure<AzureStorageConfig>(configuration.GetSection("AzureStorage"));
 
         return services;
     }

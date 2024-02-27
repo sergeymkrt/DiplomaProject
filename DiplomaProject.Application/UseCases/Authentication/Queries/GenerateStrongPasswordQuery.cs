@@ -1,4 +1,6 @@
-﻿using DiplomaProject.Domain.Services.External;
+﻿using DiplomaProject.Application.Models;
+using DiplomaProject.Domain.Enums;
+using DiplomaProject.Domain.Services.External;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -9,7 +11,7 @@ public class GenerateStrongPasswordQuery : BaseQuery<string>
     public class GenerateStrongPasswordQueryHandler(IMapper mapper, ICurrentUser currentUser)
         : BaseQueryHandler<GenerateStrongPasswordQuery>(mapper, currentUser)
     {
-        public override Task<string> Handle(GenerateStrongPasswordQuery request, CancellationToken cancellationToken)
+        public override Task<ResponseModel<string>> Handle(GenerateStrongPasswordQuery request, CancellationToken cancellationToken)
         {
             var isStrongPassword = false;
             var password = string.Empty;
@@ -19,7 +21,7 @@ public class GenerateStrongPasswordQuery : BaseQuery<string>
                 isStrongPassword = IsStrongPassword(password);
             }
 
-            return Task.FromResult(password);
+            return Task.FromResult(ResponseModel<string>.Create(ResponseCode.Success, password));
         }
 
         private static bool IsStrongPassword(string password)
@@ -56,7 +58,7 @@ public class GenerateStrongPasswordQuery : BaseQuery<string>
         {
             var builder = new StringBuilder();
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 12; i++)
             {
                 var character = (char)RandomNumberGenerator.GetInt32(33, 126);
                 builder.Append(character);

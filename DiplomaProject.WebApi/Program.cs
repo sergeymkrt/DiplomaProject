@@ -1,4 +1,5 @@
 using DiplomaProject.Application;
+using DiplomaProject.Infrastructure.Persistence;
 using DiplomaProject.Infrastructure.Persistence.Extensions;
 using DiplomaProject.WebApi.Extensions;
 using MediatR.Extensions.Autofac.DependencyInjection;
@@ -23,7 +24,8 @@ var mediatorConfig = MediatRConfigurationBuilder
 builder.Host.ConfigureContainer<ContainerBuilder>(b => b
     .RegisterMediatR(mediatorConfig)
     .RegisterModule(new ApplicationModule())
-    .RegisterModule(new MediatorModule()));
+    .RegisterModule(new MediatorModule())
+    .RegisterModule(new RepositoryModule()));
 
 // ========================================= Configure the HTTP request pipeline ============================================ //
 var app = builder.Build();

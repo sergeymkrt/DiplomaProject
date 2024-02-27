@@ -56,10 +56,10 @@ public static class ServiceCollectionExtensions
 
     public static async Task<IApplicationBuilder> UseInitialDataSeeding(this IApplicationBuilder app)
     {
-        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-        {
-            return app;
-        }
+        // if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        // {
+        //     return app;
+        // }
 
         using var serviceScope = app.ApplicationServices.CreateScope();
         var dbInitializer = serviceScope.ServiceProvider.GetService<IDbInitializer>();

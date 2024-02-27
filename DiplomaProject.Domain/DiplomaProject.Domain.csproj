@@ -7,13 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Autofac" Version="8.0.0" />
       <PackageReference Include="Humanizer.Core" Version="2.14.1" />
       <PackageReference Include="MediatR" Version="12.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Shared\" />
+      <ProjectReference Include="..\DiplomaProject.Packages\DiplomaProject.Packages.csproj" />
     </ItemGroup>
 
 </Project>

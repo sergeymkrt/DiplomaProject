@@ -24,6 +24,10 @@ public class ApplicationModule : Autofac.Module
             .As<IEncryptionService>()
             .InstancePerLifetimeScope();
 
+        builder.RegisterType<AzureStorageManagementService>()
+            .As<IFileManagementService>()
+            .InstancePerLifetimeScope();
+
         builder.RegisterType<DbInitializer>()
             .As<IDbInitializer>()
             .InstancePerLifetimeScope();

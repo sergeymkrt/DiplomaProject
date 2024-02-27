@@ -1,6 +1,8 @@
 using DiplomaProject.Application.DTOs.Authentication;
 using DiplomaProject.Application.Exceptions;
+using DiplomaProject.Application.Models;
 using DiplomaProject.Domain.Entities.User;
+using DiplomaProject.Domain.Enums;
 using DiplomaProject.Domain.Services.External;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,7 +13,7 @@ public class GetUserQuery : BaseQuery<UserDto>
     public class GetUserQueryHandler(IMapper mapper, ICurrentUser currentUser, UserManager<User> userManager)
         : BaseQueryHandler<GetUserQuery>(mapper, currentUser)
     {
-        public override async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public override async Task<ResponseModel<UserDto>> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByIdAsync(CurrentUser.Id);
             if (user is null)
@@ -20,7 +22,7 @@ public class GetUserQuery : BaseQuery<UserDto>
                 throw new NotFoundException("User not found");
             }
 
-            return Mapper.Map<UserDto>(user);
+            return ResponseModel<UserDto>.Create(ResponseCode.Success, Mapper.Map<UserDto>(user));
         }
     }
 }

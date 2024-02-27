@@ -1,6 +1,7 @@
 using DiplomaProject.Domain.Entities.User;
+using DiplomaProject.Infrastructure.Shared.Configs;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
@@ -8,40 +9,29 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace DiplomaProject.Infrastructure.Shared.ExternalServices;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(UserManager<User> userManager, IOptions<JwtConfig> config) : IAuthenticationService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _configuration;
-
-    public AuthenticationService(UserManager<User> userManager, IConfiguration configuration)
-    {
-        _userManager = userManager;
-        _configuration = configuration;
-    }
-
     public async Task<string> GenerateToken(User user)
     {
-        var userRoles = await _userManager.GetRolesAsync(user);
+        var userRoles = await userManager.GetRolesAsync(user);
 
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Name, user.Name ?? String.Empty),
-            new(ClaimTypes.Surname, user.SurName ?? String.Empty),
+            new(ClaimTypes.Name, user.Name ?? string.Empty),
+            new(ClaimTypes.Surname, user.SurName ?? string.Empty),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
 
         var securityKey = new ECDsaSecurityKey(ECDsa.Create(ECCurve.NamedCurves.nistP521));
-        securityKey.ECDsa.ImportFromPem(_configuration["JWT:PrivateKey"]);
-
-        var accessTokenHours = int.Parse(_configuration["JWT:AccessTokenValidityInHours"] ?? throw new InvalidOperationException());
+        securityKey.ECDsa.ImportFromPem(config.Value.PrivateKey);
 
         var token = new JwtSecurityToken(
-            _configuration["JWT:ValidIssuer"],
-            _configuration["JWT:ValidAudience"],
-            expires: DateTime.Now.AddHours(accessTokenHours),
+            config.Value.ValidIssuer,
+            config.Value.ValidAudience,
+            expires: DateTime.Now.AddHours(config.Value.AccessTokenValidityInHours),
             claims: authClaims,
             signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha512)
         );

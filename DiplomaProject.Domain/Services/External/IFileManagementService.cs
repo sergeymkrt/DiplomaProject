@@ -2,6 +2,7 @@ namespace DiplomaProject.Domain.Services.External;
 
 public interface IFileManagementService
 {
-    Task WriteFileAsync(string path, Stream stream);
-    Task<Stream> ReadFileAsync(string path);
+    Task<string> WriteFileAsync(Stream stream, string fileName);
+    Task<Stream> ReadFileAsync(string fileName);
+    Task DeleteFileAsync(string fileName);
 }

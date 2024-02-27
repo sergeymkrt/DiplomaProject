@@ -1,5 +1,3 @@
-using DiplomaProject.Domain.Helpers;
-
 namespace DiplomaProject.Infrastructure.Persistence.Extensions;
 
 public static class PaginateExtensions
