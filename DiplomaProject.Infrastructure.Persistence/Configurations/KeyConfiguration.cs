@@ -17,6 +17,6 @@ public class KeyConfiguration : IEntityTypeConfiguration<Key>
         builder.HasOne(x => x.KeySize)
             .WithMany(x => x.Keys)
             .HasForeignKey(x => x.KeySizeID)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

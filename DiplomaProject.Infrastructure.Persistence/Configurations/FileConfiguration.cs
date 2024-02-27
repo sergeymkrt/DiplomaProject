@@ -22,6 +22,6 @@ public class FileConfiguration : IEntityTypeConfiguration<Domain.AggregatesModel
             .HasOne(x => x.Key)
             .WithMany(x => x.Files)
             .HasForeignKey(x => x.KeyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

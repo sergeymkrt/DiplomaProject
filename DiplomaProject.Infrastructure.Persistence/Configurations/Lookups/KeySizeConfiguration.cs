@@ -9,7 +9,7 @@ public class KeySizeConfiguration : IEntityTypeConfiguration<KeySize>
     {
         builder.ToBaseEnumerationConfig();
 
-        var enumItems = typeof(KeySize).ToLookupEnumItemList();
+        var enumItems = typeof(Domain.Enums.KeySize).ToLookupEnumItemList();
         builder.HasData(enumItems.Select(ei => new KeySize(ei.Value, ei.Name)));
     }
 }

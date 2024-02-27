@@ -15,7 +15,9 @@ public class AppContext : WritableDbContext
     public DbSet<KeySize> KeySizes { get; set; }
     #endregion
 
-
+    public AppContext()
+    {
+    }
     public AppContext(DbContextOptions<AppContext> options) : base(options) { }
 
     public AppContext(

@@ -17,7 +17,7 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -45,10 +45,28 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .HasColumnName("created_date")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<string>("FileDirectory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("KeyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(250)
@@ -67,9 +85,73 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("KeyId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("files", (string)null);
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Keys.Key", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasDefaultValue("testId")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("KeySizeID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<DateTimeOffset?>("ModifiedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("modified_date")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PrivateKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KeySizeID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("keys", (string)null);
                 });
 
             modelBuilder.Entity("DiplomaProject.Domain.Entities.User.Role", b =>
@@ -168,6 +250,46 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.KeySize", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("key_sizes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2048,
+                            Name = "Size2048"
+                        },
+                        new
+                        {
+                            Id = 3072,
+                            Name = "Size3072"
+                        },
+                        new
+                        {
+                            Id = 7680,
+                            Name = "Size7680"
+                        },
+                        new
+                        {
+                            Id = 15360,
+                            Name = "Size15360"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -278,11 +400,38 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.FileAggregate.File", b =>
                 {
+                    b.HasOne("DiplomaProject.Domain.AggregatesModel.Keys.Key", "Key")
+                        .WithMany("Files")
+                        .HasForeignKey("KeyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("DiplomaProject.Domain.Entities.User.User", "User")
                         .WithMany("Files")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Key");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Keys.Key", b =>
+                {
+                    b.HasOne("DiplomaProject.Domain.Shared.Lookups.KeySize", "KeySize")
+                        .WithMany("Keys")
+                        .HasForeignKey("KeySizeID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaProject.Domain.Entities.User.User", "User")
+                        .WithMany("Keys")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KeySize");
 
                     b.Navigation("User");
                 });
@@ -338,9 +487,21 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Keys.Key", b =>
+                {
+                    b.Navigation("Files");
+                });
+
             modelBuilder.Entity("DiplomaProject.Domain.Entities.User.User", b =>
                 {
                     b.Navigation("Files");
+
+                    b.Navigation("Keys");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.KeySize", b =>
+                {
+                    b.Navigation("Keys");
                 });
 #pragma warning restore 612, 618
         }
