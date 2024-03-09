@@ -18,6 +18,11 @@
       <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\Directories\Queries\" />
+      <Folder Include="UseCases\Groups\" />
+    </ItemGroup>
+
 
 
 

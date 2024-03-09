@@ -1,5 +1,6 @@
 using DiplomaProject.Application.DTOs.Authentication;
 using DiplomaProject.Application.Exceptions;
+using DiplomaProject.Application.Models;
 using DiplomaProject.Domain.Entities.User;
 using DiplomaProject.Domain.Services.External;
 using Microsoft.AspNetCore.Identity;
@@ -15,9 +16,9 @@ public class LoginUserCommand(AuthUserDto dto) : BaseCommand<string>
         ICurrentUser currentUser,
         UserManager<User> userManager,
         IAuthenticationService authenticationService)
-        : BaseCommandHandler<LoginUserCommand>(mapper, currentUser)
+        : BaseCommandHandler<LoginUserCommand>(currentUser, mapper)
     {
-        public override async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+        public override async Task<ResponseModel<string>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByNameAsync(request.DTO.UserName);
             if (user is null)
@@ -27,7 +28,7 @@ public class LoginUserCommand(AuthUserDto dto) : BaseCommand<string>
 
             if (await userManager.CheckPasswordAsync(user, request.DTO.Password))
             {
-                return await authenticationService.GenerateToken(user);
+                return ResponseModel<string>.Create(await authenticationService.GenerateToken(user));
             }
             else
             {

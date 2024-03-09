@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DiplomaProject.Application.UseCases.Authentication.Commands;
 
-public class DeleteUserCommand(string id) : BaseCommand<ResponseModel<bool>>
+public class DeleteUserCommand(string id) : BaseCommand<bool>
 {
     public string Id { get; set; } = id;
 
     public class DeleteUserCommandHandler(IMapper mapper, ICurrentUser currentUser, UserManager<User> userManager)
-        : BaseCommandHandler<DeleteUserCommand>(mapper, currentUser)
+        : BaseCommandHandler<DeleteUserCommand>(currentUser, mapper)
     {
         public override async Task<ResponseModel<bool>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {

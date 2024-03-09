@@ -5,7 +5,7 @@ using DiplomaProject.Domain.Services.External;
 
 namespace DiplomaProject.Application.UseCases.Files.Commands;
 
-public class DeleteFileCommand(long fileId) : BaseCommand<ResponseModel>
+public class DeleteFileCommand(long fileId) : BaseCommand
 {
     public long FileId { get; set; } = fileId;
 
@@ -13,7 +13,7 @@ public class DeleteFileCommand(long fileId) : BaseCommand<ResponseModel>
         IMapper mapper,
         ICurrentUser currentUser,
         IFileDomainService fileDomainService)
-        : BaseCommandHandler<DeleteFileCommand>(mapper, currentUser)
+        : BaseCommandHandler<DeleteFileCommand>(currentUser, mapper)
     {
         public override async Task<ResponseModel> Handle(DeleteFileCommand request, CancellationToken cancellationToken)
         {

@@ -6,13 +6,13 @@ using DiplomaProject.Domain.Services.External;
 
 namespace DiplomaProject.Application.UseCases.Keys.Commands;
 
-public class UpdateKeyCommand(KeyDto keyDto) : BaseCommand<ResponseModel<KeyDto>>
+public class UpdateKeyCommand(KeyDto keyDto) : BaseCommand<KeyDto>
 {
     public KeyDto Dto { get; set; } = keyDto;
 
     public class UpdateKeyCommandHandler(IMapper mapper, ICurrentUser currentUser,
         IKeyDomainService keyDomainService)
-        : BaseCommandHandler<UpdateKeyCommand>(mapper, currentUser)
+        : BaseCommandHandler<UpdateKeyCommand>(currentUser, mapper)
     {
         public override async Task<ResponseModel<KeyDto>> Handle(UpdateKeyCommand request, CancellationToken cancellationToken)
         {

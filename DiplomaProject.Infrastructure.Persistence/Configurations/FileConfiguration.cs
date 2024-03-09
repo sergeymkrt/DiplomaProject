@@ -13,12 +13,6 @@ public class FileConfiguration : IEntityTypeConfiguration<Domain.AggregatesModel
             .IsRequired();
 
         builder
-            .HasOne(x => x.User)
-            .WithMany(x => x.Files)
-            .HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder
             .HasOne(x => x.Key)
             .WithMany(x => x.Files)
             .HasForeignKey(x => x.KeyId)
