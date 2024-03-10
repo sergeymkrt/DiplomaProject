@@ -8,18 +8,18 @@ using File = DiplomaProject.Domain.AggregatesModel.FileAggregate.File;
 
 namespace DiplomaProject.Application.UseCases.Files.Commands;
 
-public class UploadFileCommand(IFormFile file, long keyId, string? directory) : BaseCommand<ResponseModel<File>>
+public class UploadFileCommand(IFormFile file, long keyId, long directoryId) : BaseCommand<File>
 {
     public IFormFile File { get; set; } = file;
     public long KeyId { get; set; } = keyId;
-    public string? Directory { get; set; } = directory;
+    public long DirectoryId { get; set; } = directoryId;
 
     public class UploadFileCommandHandler(
         IMapper mapper,
         ICurrentUser currentUser,
         IKeyDomainService keyDomainService,
         IFileDomainService fileDomainService)
-        : BaseCommandHandler<UploadFileCommand>(mapper, currentUser)
+        : BaseCommandHandler<UploadFileCommand>(currentUser, mapper)
     {
         public override async Task<ResponseModel<File>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
         {
@@ -27,7 +27,7 @@ public class UploadFileCommand(IFormFile file, long keyId, string? directory) : 
                 request.File.FileName,
                 request.File.ContentType,
                 request.KeyId,
-                request.Directory);
+                request.DirectoryId);
 
             var key = await keyDomainService.GetKeyById(request.KeyId);
             fileObject.SetKey(key);

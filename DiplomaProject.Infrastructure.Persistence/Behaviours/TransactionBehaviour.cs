@@ -1,19 +1,9 @@
-using DiplomaProject.Application;
-using DiplomaProject.Infrastructure.Persistence.DbContexts;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-
 namespace DiplomaProject.Infrastructure.Persistence.Behaviours;
 
-public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class TransactionBehaviour<TRequest, TResponse>(AppContext dbContext, ICurrentUser currentUser) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly WritableDbContext _dbContext;
-
-    public TransactionBehaviour(WritableDbContext dbContext)
-    {
-        _dbContext = dbContext ?? throw new ArgumentException(nameof(WritableDbContext));
-    }
+    private readonly AppContext _dbContext = dbContext ?? throw new ArgumentException(nameof(AppContext));
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
@@ -43,7 +33,7 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
                 {
                     response = await next();
 
-                    await _dbContext.CommitTransactionAsync(transaction);
+                    await _dbContext.CommitTransactionAsync(transaction, currentUser.Id);
 
                     transactionId = transaction.TransactionId;
                 }

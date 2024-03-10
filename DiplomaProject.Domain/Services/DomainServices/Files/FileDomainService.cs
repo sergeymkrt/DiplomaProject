@@ -7,14 +7,13 @@ using File = DiplomaProject.Domain.AggregatesModel.FileAggregate.File;
 namespace DiplomaProject.Domain.Services.DomainServices.Files;
 
 public class FileDomainService(
-    ICurrentUser currentUser,
     IFileRepository fileRepository,
     IEncryptionService encryptionService,
     IFileManagementService fileManagementService) : IFileDomainService
 {
-    public async Task<File> CreateFileAsync(string fileName, string mimeType, long keyId, string directory = null)
+    public async Task<File> CreateFileAsync(string fileName, string mimeType, long keyId, long directoryId)
     {
-        var file = new File(fileName, mimeType, keyId, currentUser.Id, directory);
+        var file = new File(fileName, mimeType, keyId, directoryId);
         await fileRepository.AddAsync(file);
         return file;
     }
@@ -64,6 +63,11 @@ public class FileDomainService(
     public Task<Paginated<File>> GetFilesAsync(Expression<Func<File, bool>> predicate = null, string search = null, List<(string ColumnName, bool isAsc)> orderBy = null, int pageNumber = 1,
         int pageSize = 10)
     {
-        return fileRepository.GetPaginatedAsync(predicate, search, orderBy, pageNumber, pageSize);
+        return fileRepository.GetPaginatedAsync(
+            predicate: predicate,
+            search: search,
+            orderBy: orderBy,
+            pageNumber: pageNumber,
+            pageSize: pageSize);
     }
 }

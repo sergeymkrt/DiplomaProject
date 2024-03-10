@@ -1,7 +1,18 @@
+using DiplomaProject.Application;
 using DiplomaProject.Application.Extensions;
+using DiplomaProject.Domain.AggregatesModel.Directories;
+using DiplomaProject.Domain.AggregatesModel.FileAggregate;
+using DiplomaProject.Domain.AggregatesModel.Groups;
+using DiplomaProject.Domain.AggregatesModel.Keys;
 using DiplomaProject.Domain.Entities.User;
+using DiplomaProject.Domain.Services.DomainServices.Directories;
+using DiplomaProject.Domain.Services.DomainServices.Files;
+using DiplomaProject.Domain.Services.DomainServices.Groups;
+using DiplomaProject.Domain.Services.DomainServices.Keys;
+using DiplomaProject.Domain.Services.Encryption;
 using DiplomaProject.Infrastructure.Persistence.Extensions;
 using DiplomaProject.Infrastructure.Shared.Configs;
+using DiplomaProject.Infrastructure.Shared.Encryption;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -79,19 +90,19 @@ public static class ConfigureServices
             configuration.GetConnectionString("DefaultConnection")
             : Environment.GetEnvironmentVariable("SQLAZURECONNSTR");
 
-        services.AddSqlServerDbContext(connectionsString, true);
+        services.AddSqlServerDbContext<AppContext>(connectionsString, true);
 
         services.AddIdentity<User, Role>()
             .AddRoles<Role>()
             .AddEntityFrameworkStores<AppContext>()
             .AddDefaultTokenProviders();
 
-        services.AddDbContext<AppQueryContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                sqlServerOptionsAction: sqlOptions =>
-                {
-                    sqlOptions.MigrationsAssembly(typeof(AppQueryContext).GetTypeInfo().Assembly.GetName().Name);
-                }));
+        services.AddScoped<IDbInitializer, DbInitializer>();
+
+        services.AddScoped<IFileRepository, FileRepository>();
+        services.AddScoped<IKeyRepository, KeyRepository>();
+        services.AddScoped<IGroupRepository, GroupRepository>();
+        services.AddScoped<IDirectoryRepository, DirectoryRepository>();
 
         return services;
     }
@@ -151,6 +162,21 @@ public static class ConfigureServices
 
         services.AddAuthorizationBuilder()
             .AddPolicy("CanPurge", policy => policy.RequireRole(Domain.Enums.Role.ADMIN.ToString("F")));
+
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IEncryptionService, EncryptionService>();
+        services.AddScoped<IFileManagementService, AzureStorageManagementService>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
+
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
+
+        services.AddScoped<IFileDomainService, FileDomainService>();
+        services.AddScoped<IKeyDomainService, KeyDomainService>();
+        services.AddScoped<IGroupDomainService, GroupDomainService>();
+        services.AddScoped<IDirectoryDomainService, DirectoryDomainService>();
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(BaseCommand).GetTypeInfo().Assembly));
+
 
         return services;
     }

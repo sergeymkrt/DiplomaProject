@@ -13,5 +13,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(p => p.SurName)
             .HasDefaultValue(null)
             .IsRequired(false);
+
+        builder.HasMany(x => x.UserGroups)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

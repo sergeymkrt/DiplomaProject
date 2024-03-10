@@ -22,6 +22,59 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Directories.Directory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasDefaultValue("testId")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<DateTimeOffset?>("ModifiedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("modified_date")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long?>("ParentDirectoryId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("ParentDirectoryId");
+
+                    b.ToTable("directories", (string)null);
+                });
+
             modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.FileAggregate.File", b =>
                 {
                     b.Property<long>("Id")
@@ -44,6 +97,9 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("created_date")
                         .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<long>("DirectoryId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("FileDirectory")
                         .IsRequired()
@@ -80,16 +136,101 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DirectoryId");
 
                     b.HasIndex("KeyId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("files", (string)null);
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Groups.Group", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AccessLevelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasDefaultValue("testId")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("created_date")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("DirectoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<DateTimeOffset?>("ModifiedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("modified_date")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccessLevelId");
+
+                    b.HasIndex("DirectoryId")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("groups", (string)null);
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Groups.UserGroup", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("PermissionTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("PermissionTypeId");
+
+                    b.ToTable("UserGroups", (string)null);
                 });
 
             modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Keys.Key", b =>
@@ -189,6 +330,12 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AccessLevelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -220,6 +367,9 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long>("PersonalDirectoryId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -249,7 +399,45 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("PersonalDirectoryId")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.AccessLevel", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("access_levels", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Confidential"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Secret"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "TopSecret"
+                        });
                 });
 
             modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.KeySize", b =>
@@ -289,6 +477,36 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         {
                             Id = 15360,
                             Name = "Size15360"
+                        });
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.PermissionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("permission_types", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Editor"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Viewer"
                         });
                 });
 
@@ -398,21 +616,96 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Directories.Directory", b =>
+                {
+                    b.HasOne("DiplomaProject.Domain.Entities.User.User", "Owner")
+                        .WithMany("OwnedDirectories")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("DiplomaProject.Domain.AggregatesModel.Directories.Directory", "ParentDirectory")
+                        .WithMany("Directories")
+                        .HasForeignKey("ParentDirectoryId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("ParentDirectory");
+                });
+
             modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.FileAggregate.File", b =>
                 {
+                    b.HasOne("DiplomaProject.Domain.AggregatesModel.Directories.Directory", "Directory")
+                        .WithMany("Files")
+                        .HasForeignKey("DirectoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DiplomaProject.Domain.AggregatesModel.Keys.Key", "Key")
                         .WithMany("Files")
                         .HasForeignKey("KeyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("DiplomaProject.Domain.Entities.User.User", "User")
+                    b.HasOne("DiplomaProject.Domain.Entities.User.User", null)
                         .WithMany("Files")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Directory");
+
+                    b.Navigation("Key");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Groups.Group", b =>
+                {
+                    b.HasOne("DiplomaProject.Domain.Shared.Lookups.AccessLevel", "AccessLevel")
+                        .WithMany("Groups")
+                        .HasForeignKey("AccessLevelId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaProject.Domain.AggregatesModel.Directories.Directory", "Directory")
+                        .WithOne("Group")
+                        .HasForeignKey("DiplomaProject.Domain.AggregatesModel.Groups.Group", "DirectoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaProject.Domain.Entities.User.User", "Owner")
+                        .WithMany("OwnedGroups")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AccessLevel");
+
+                    b.Navigation("Directory");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Groups.UserGroup", b =>
+                {
+                    b.HasOne("DiplomaProject.Domain.AggregatesModel.Groups.Group", "Group")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaProject.Domain.Shared.Lookups.PermissionType", "PermissionType")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("PermissionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DiplomaProject.Domain.Entities.User.User", "User")
+                        .WithMany("UserGroups")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Key");
+                    b.Navigation("Group");
+
+                    b.Navigation("PermissionType");
 
                     b.Navigation("User");
                 });
@@ -434,6 +727,17 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                     b.Navigation("KeySize");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Entities.User.User", b =>
+                {
+                    b.HasOne("DiplomaProject.Domain.AggregatesModel.Directories.Directory", "PersonalDirectory")
+                        .WithOne("PersonalOwner")
+                        .HasForeignKey("DiplomaProject.Domain.Entities.User.User", "PersonalDirectoryId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("PersonalDirectory");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -487,6 +791,24 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Directories.Directory", b =>
+                {
+                    b.Navigation("Directories");
+
+                    b.Navigation("Files");
+
+                    b.Navigation("Group")
+                        .IsRequired();
+
+                    b.Navigation("PersonalOwner")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Groups.Group", b =>
+                {
+                    b.Navigation("UserGroups");
+                });
+
             modelBuilder.Entity("DiplomaProject.Domain.AggregatesModel.Keys.Key", b =>
                 {
                     b.Navigation("Files");
@@ -497,11 +819,27 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("Keys");
+
+                    b.Navigation("OwnedDirectories");
+
+                    b.Navigation("OwnedGroups");
+
+                    b.Navigation("UserGroups");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.AccessLevel", b =>
+                {
+                    b.Navigation("Groups");
                 });
 
             modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.KeySize", b =>
                 {
                     b.Navigation("Keys");
+                });
+
+            modelBuilder.Entity("DiplomaProject.Domain.Shared.Lookups.PermissionType", b =>
+                {
+                    b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618
         }

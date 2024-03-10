@@ -5,7 +5,7 @@ namespace DiplomaProject.Domain.Services.DomainServices.Files;
 
 public interface IFileDomainService
 {
-    Task<File> CreateFileAsync(string fileName, string mimeType, long keyId, string directory = null);
+    Task<File> CreateFileAsync(string fileName, string mimeType, long keyId, long directoryId);
     Task<string> UploadFileAsync(Stream stream, File file);
     Task DeleteFileAsync(long fileId);
     Task<FileResponse> DownloadFileAsync(long fileId);
