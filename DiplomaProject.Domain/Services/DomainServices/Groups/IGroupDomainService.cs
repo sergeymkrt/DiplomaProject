@@ -12,7 +12,7 @@ public interface IGroupDomainService
     Task DeleteGroup(long groupId, string userId);
     Task<Paginated<Group>> GetGroups(Expression<Func<Group, bool>> predicate = null,
         string search = null,
-        List<(string ColumnName, bool isAsc)> orderBy = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null,
         int pageNumber = 1,
         int pageSize = 10);
 }

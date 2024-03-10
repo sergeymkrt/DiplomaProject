@@ -16,7 +16,7 @@ public interface IRepository<TEntity>
     Task<Paginated<TEntity>> GetPaginatedAsync(
         Expression<Func<TEntity, bool>> predicate = null,
         string search = null,
-        List<(string ColumnName, bool isAsc)> orderBy = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null,
         int depth = 2,
         int pageNumber = 1,
         int pageSize = 10,
@@ -25,7 +25,7 @@ public interface IRepository<TEntity>
     IQueryable<TEntity> GetQueryable(
         Expression<Func<TEntity, bool>> predicate = null,
         string search = null,
-        List<(string ColumnName, bool isAsc)> orderBy = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null,
         int depth = 2,
         IEnumerable<SearchExpression> extraSearchExpressions = default,
         bool enableTracking = false);

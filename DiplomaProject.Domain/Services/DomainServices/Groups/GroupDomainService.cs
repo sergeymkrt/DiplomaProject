@@ -68,7 +68,9 @@ public class GroupDomainService(
         groupRepository.Remove(group);
     }
 
-    public Task<Paginated<Group>> GetGroups(Expression<Func<Group, bool>> predicate = null, string search = null, List<(string ColumnName, bool isAsc)> orderBy = null, int pageNumber = 1,
+    public Task<Paginated<Group>> GetGroups(Expression<Func<Group, bool>> predicate = null,
+        string search = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null, int pageNumber = 1,
         int pageSize = 10)
     {
         return groupRepository.GetPaginatedAsync(

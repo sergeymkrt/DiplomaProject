@@ -21,17 +21,17 @@ public abstract class BaseQuery<TResponse> : IRequest<ResponseModel<TResponse>>
 public abstract class BasePaginatedQuery<TResponse>(
     int pageNumber = 1,
     int pageSize = 10,
-    string search = null,
-    string orderByColumn = null,
-    bool isAsc = false)
+    string? search = null,
+    string? orderByColumn = null,
+    bool? isAsc = false)
     : IRequest<ResponseModel<Paginated<TResponse>>>
 {
     public int PageNumber { get; } = pageNumber;
     public int PageSize { get; } = pageSize;
     public string Search { get; } = search;
     public string OrderByColumn { get; } = orderByColumn;
-    public bool IsAsc { get; } = isAsc;
-    public List<(string ColumnName, bool isAsc)> OrderBy { get; } = [(orderByColumn, isAsc)];
+    public bool? IsAsc { get; } = isAsc;
+    public List<(string? ColumnName, bool? isAsc)> OrderBy { get; } = [(orderByColumn, isAsc)];
 
     public abstract class BaseQueryHandler<TRequest>(ICurrentUser currentUser, IMapper mapper)
         : IRequestHandler<TRequest, ResponseModel<Paginated<TResponse>>>

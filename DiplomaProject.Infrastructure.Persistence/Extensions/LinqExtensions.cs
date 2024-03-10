@@ -101,7 +101,7 @@ public static class LinqExtensions
 
     public static IQueryable<T> ApplySorting<T>(
         this IQueryable<T> query,
-        List<(string ColumnName, bool isAsc)> orderBy = null) where T : class
+        List<(string? ColumnName, bool? isAsc)> orderBy = null) where T : class
     {
         if (orderBy == null || (orderBy.Count == 1 && string.IsNullOrWhiteSpace(orderBy.First().ColumnName)))
         {
@@ -110,7 +110,7 @@ public static class LinqExtensions
 
         Func<IQueryable<T>, IOrderedQueryable<T>> orderByExpr = x =>
             x.Sort(orderBy.Select(s =>
-                new SortingColumn(s.ColumnName, s.isAsc ? SortDirection.Ascending : SortDirection.Descending)));
+                new SortingColumn(s.ColumnName, s.isAsc ?? false ? SortDirection.Ascending : SortDirection.Descending)));
 
         IQueryable<T> res = orderByExpr(query);
         return res;

@@ -12,7 +12,7 @@ public interface IFileDomainService
 
     Task<Paginated<File>> GetFilesAsync(Expression<Func<File, bool>> predicate = null,
         string search = null,
-        List<(string ColumnName, bool isAsc)> orderBy = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null,
         int pageNumber = 1,
         int pageSize = 10);
 }

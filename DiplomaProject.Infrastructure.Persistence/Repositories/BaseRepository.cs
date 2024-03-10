@@ -19,7 +19,7 @@ public abstract class RepositoryBase<TEntity>(AppContext context) : IRepository<
     public virtual Task<Paginated<TEntity>> GetPaginatedAsync(
         Expression<Func<TEntity, bool>> predicate = null,
         string search = null,
-        List<(string ColumnName, bool isAsc)> orderBy = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null,
         int depth = 2,
         int pageNumber = 1,
         int pageSize = 10,
@@ -32,7 +32,7 @@ public abstract class RepositoryBase<TEntity>(AppContext context) : IRepository<
     public virtual IQueryable<TEntity> GetQueryable(
         Expression<Func<TEntity, bool>> predicate = null,
         string search = null,
-        List<(string ColumnName, bool isAsc)> orderBy = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null,
         int depth = 2,
         IEnumerable<SearchExpression> extraSearchExpressions = default,
         bool enableTracking = false)

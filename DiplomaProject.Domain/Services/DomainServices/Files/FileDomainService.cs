@@ -60,7 +60,9 @@ public class FileDomainService(
         return FileResponse.CreateFrom(file.FileName, file.MimeType, decryptedData);
     }
 
-    public Task<Paginated<File>> GetFilesAsync(Expression<Func<File, bool>> predicate = null, string search = null, List<(string ColumnName, bool isAsc)> orderBy = null, int pageNumber = 1,
+    public Task<Paginated<File>> GetFilesAsync(Expression<Func<File, bool>> predicate = null,
+        string search = null,
+        List<(string? ColumnName, bool? isAsc)> orderBy = null, int pageNumber = 1,
         int pageSize = 10)
     {
         return fileRepository.GetPaginatedAsync(

@@ -24,10 +24,11 @@ public class DirectoryController(IMediator mediator) : BaseController(mediator)
     public async Task<IActionResult> GetGroups(
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
-        [FromQuery] string search,
-        [FromQuery] string orderByColumn,
-        [FromQuery] bool isAsc)
+        [FromQuery] string? search,
+        [FromQuery] string? orderByColumn,
+        [FromQuery] bool? isAsc,
+        [FromQuery] long? parentDirectoryId)
     {
-        return Ok(await _mediator.Send(new GetDirectoriesQuery(pageNumber, pageSize, search, orderByColumn, isAsc)));
+        return Ok(await _mediator.Send(new GetDirectoriesQuery(pageNumber, pageSize, search, orderByColumn, isAsc, parentDirectoryId)));
     }
 }
