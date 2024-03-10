@@ -1,9 +1,12 @@
 ﻿using DiplomaProject.Application.DTOs.Keys;
 using DiplomaProject.Application.UseCases.Keys.Commands;
 using DiplomaProject.Application.UseCases.Keys.Queries;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class KeysController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

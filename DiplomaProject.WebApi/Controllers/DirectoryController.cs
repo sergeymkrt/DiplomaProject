@@ -1,8 +1,11 @@
 ﻿using DiplomaProject.Application.UseCases.Directories.Commands;
 using DiplomaProject.Application.UseCases.Directories.Queries;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class DirectoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

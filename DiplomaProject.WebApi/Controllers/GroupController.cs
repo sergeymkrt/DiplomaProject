@@ -1,9 +1,12 @@
 ﻿using DiplomaProject.Application.DTOs.Groups;
 using DiplomaProject.Application.UseCases.Groups.Commands;
 using DiplomaProject.Application.UseCases.Groups.Queries;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class GroupController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]

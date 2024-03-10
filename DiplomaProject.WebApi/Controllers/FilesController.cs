@@ -1,8 +1,11 @@
 ﻿using DiplomaProject.Application.UseCases.Files.Commands;
 using DiplomaProject.Application.UseCases.Files.Queries;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class FilesController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]
