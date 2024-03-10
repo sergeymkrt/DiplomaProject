@@ -70,7 +70,7 @@ public static class ConfigureServices
 
             options.AddPolicy("Production",
                 builder => builder
-                    .WithOrigins("https://diploma-project-frontend.azurewebsites.net", "https://diploma-project-api.azurewebsites.net")
+                    .WithOrigins("http://localhost:5173", "https://diploma-project-frontend.azurewebsites.net", "https://diploma-project-api.azurewebsites.net")
                     // .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
