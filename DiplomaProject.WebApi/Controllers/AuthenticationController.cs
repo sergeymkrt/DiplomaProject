@@ -5,20 +5,15 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
 
-public class AuthenticationController : BaseController
+public class AuthenticationController(IMediator mediator, IConfiguration configuration)
+    : BaseController(mediator)
 {
-    private readonly IConfiguration _configuration;
-    public AuthenticationController(IMediator mediator, IConfiguration configuration) : base(mediator)
-    {
-        _configuration = configuration;
-    }
-
     [HttpPost("login")]
     public async Task<IActionResult> Login(AuthUserDto loginUser)
     {
         var token = await _mediator.Send(new LoginUserCommand(loginUser));
-        var tokenExpiration = int.Parse(_configuration["Jwt:AccessTokenValidityInHours"]);
-        Response.Cookies.Append("authorization", token, new CookieOptions
+        var tokenExpiration = int.Parse(configuration["Jwt:AccessTokenValidityInHours"]);
+        Response.Cookies.Append("authorization", token.Data, new CookieOptions
         {
             HttpOnly = true,
             SameSite = SameSiteMode.None,

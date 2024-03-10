@@ -1,4 +1,5 @@
-﻿using Directory = DiplomaProject.Domain.AggregatesModel.Directories.Directory;
+﻿using DiplomaProject.Domain.Entities.User;
+using Directory = DiplomaProject.Domain.AggregatesModel.Directories.Directory;
 
 namespace DiplomaProject.Infrastructure.Persistence.Configurations;
 
@@ -20,7 +21,7 @@ public class DirectoryConfiguration : IEntityTypeConfiguration<Directory>
 
         builder.HasOne(x => x.PersonalOwner)
             .WithOne(x => x.PersonalDirectory)
-            .HasForeignKey<Directory>(x => x.Id)
+            .HasForeignKey<User>(x => x.PersonalDirectoryId)
             .OnDelete(DeleteBehavior.ClientCascade);
 
         builder.HasOne(x => x.Owner)

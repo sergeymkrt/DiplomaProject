@@ -63,6 +63,11 @@ public class FileDomainService(
     public Task<Paginated<File>> GetFilesAsync(Expression<Func<File, bool>> predicate = null, string search = null, List<(string ColumnName, bool isAsc)> orderBy = null, int pageNumber = 1,
         int pageSize = 10)
     {
-        return fileRepository.GetPaginatedAsync(predicate, search, orderBy, pageNumber, pageSize);
+        return fileRepository.GetPaginatedAsync(
+            predicate: predicate,
+            search: search,
+            orderBy: orderBy,
+            pageNumber: pageNumber,
+            pageSize: pageSize);
     }
 }

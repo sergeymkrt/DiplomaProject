@@ -10,7 +10,7 @@ public class Directory : Entity, IAggregateRoot
     {
 
     }
-    public Directory(string name, string ownerId, long? parentDirectoryId)
+    public Directory(string name, string? ownerId = null, long? parentDirectoryId = null)
     {
         Name = name;
         OwnerId = ownerId;

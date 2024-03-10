@@ -2,6 +2,7 @@ using DiplomaProject.Application.DTOs.Authentication;
 using DiplomaProject.Application.Exceptions;
 using DiplomaProject.Application.Models;
 using DiplomaProject.Domain.Entities.User;
+using DiplomaProject.Domain.Exceptions;
 using DiplomaProject.Domain.Services.External;
 using Microsoft.AspNetCore.Identity;
 

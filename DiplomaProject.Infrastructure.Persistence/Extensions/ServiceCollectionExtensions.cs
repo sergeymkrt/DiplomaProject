@@ -18,20 +18,20 @@ public static class ServiceCollectionExtensions
     /// Whether to allow logging. Should be enabled in Development only to avoid incurring performance issues.
     /// </param>
     /// <returns>The services collection container to supported chaining.</returns>
-    public static IServiceCollection AddSqlServerDbContext(
+    public static IServiceCollection AddSqlServerDbContext<TContext>(
         this IServiceCollection services,
-        string connectionString, bool enableLogging = false)
+        string connectionString, bool enableLogging = false) where TContext : DbContext
     {
         if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentNullException(nameof(connectionString), @"Connection string cannot be empty");
 
-        services.AddDbContext<WritableDbContext, AppContext>(options =>
+        services.AddDbContext<TContext>(options =>
         {
             options.UseSqlServer(
                 connectionString,
                 sqlOptions =>
                 {
                     sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(1500), null);
-                    sqlOptions.MigrationsAssembly(typeof(WritableDbContext).GetTypeInfo().Assembly.GetName().Name);
+                    sqlOptions.MigrationsAssembly(typeof(AppContext).GetTypeInfo().Assembly.GetName().Name);
                     sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                 });
             if (enableLogging)
@@ -45,16 +45,14 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static async Task<IApplicationBuilder> UseDatabaseMigration(this IApplicationBuilder app)
+    public static async Task UseDatabaseMigration(this IApplicationBuilder app)
     {
         using var serviceScope = app.ApplicationServices.CreateScope();
-        var context = serviceScope.ServiceProvider.GetService<WritableDbContext>();
+        var context = serviceScope.ServiceProvider.GetService<AppContext>();
         await context?.Database?.MigrateAsync();
-
-        return app;
     }
 
-    public static async Task<IApplicationBuilder> UseInitialDataSeeding(this IApplicationBuilder app)
+    public static async Task UseInitialDataSeeding(this IApplicationBuilder app)
     {
         // if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         // {
@@ -65,7 +63,5 @@ public static class ServiceCollectionExtensions
         var dbInitializer = serviceScope.ServiceProvider.GetService<IDbInitializer>();
 
         await dbInitializer.SeedAsync();
-
-        return app;
     }
 }

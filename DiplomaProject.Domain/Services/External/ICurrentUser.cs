@@ -1,3 +1,5 @@
+using DiplomaProject.Domain.Entities.User;
+
 namespace DiplomaProject.Domain.Services.External;
 
 public interface ICurrentUser
@@ -6,4 +8,6 @@ public interface ICurrentUser
     string FirstName { get; }
     string LastName { get; }
     string Email { get; }
+
+    Task<User?> GetUserWithGroups();
 }

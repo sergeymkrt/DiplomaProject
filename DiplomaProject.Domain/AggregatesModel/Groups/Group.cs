@@ -6,6 +6,25 @@ namespace DiplomaProject.Domain.AggregatesModel.Groups;
 
 public class Group : Entity, IAggregateRoot
 {
+    public Group()
+    {
+    }
+
+    public Group(string name, string description, int accessLevelId, User owner)
+    {
+        if (owner.AccessLevelId < accessLevelId)
+        {
+            throw new DomainException("Owner access level is lower than group access level");
+        }
+
+        Name = name;
+        Description = description;
+        AccessLevelId = accessLevelId;
+        OwnerId = owner.Id;
+
+        Directory = new Directory(name, owner.Id, null);
+    }
+
     public string Name { get; set; }
     public string Description { get; set; }
 
@@ -19,4 +38,18 @@ public class Group : Entity, IAggregateRoot
     public virtual Directory Directory { get; set; }
 
     public ICollection<UserGroup> UserGroups { get; set; } = [];
+
+    public void RemoveUser(User user)
+    {
+        var userGroup = UserGroups.FirstOrDefault(x => x.UserId == user.Id);
+        if (userGroup != null)
+        {
+            UserGroups.Remove(userGroup);
+        }
+    }
+
+    public void AddUser(User user, int permissionId)
+    {
+        UserGroups.Add(new UserGroup(user.Id, permissionId));
+    }
 }

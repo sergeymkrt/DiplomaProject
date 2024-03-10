@@ -1,4 +1,4 @@
-namespace DiplomaProject.Application.Exceptions;
+namespace DiplomaProject.Domain.Exceptions;
 
 public class NotFoundException : Exception
 {
