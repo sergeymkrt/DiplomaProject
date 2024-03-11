@@ -12,6 +12,15 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
     [HttpPost("login")]
     public async Task<IActionResult> Login(AuthUserDto loginUser)
     {
+        Response.Cookies.Delete("authorization", new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
+            Secure = true,
+            IsEssential = true,
+            Path = "/"
+        });
+
         var token = await _mediator.Send(new LoginUserCommand(loginUser));
         var tokenExpiration = int.Parse(configuration["Jwt:AccessTokenValidityInHours"]);
         Response.Cookies.Append("authorization", token.Data, new CookieOptions
