@@ -15,7 +15,7 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
         Response.Cookies.Delete("authorization", new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            SameSite = SameSiteMode.None,
             Secure = true,
             IsEssential = true,
             Path = "/"
@@ -26,7 +26,7 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
         Response.Cookies.Append("authorization", token.Data, new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            SameSite = SameSiteMode.None,
             Secure = true,
             IsEssential = true,
             Expires = DateTime.Now.AddHours(tokenExpiration),
@@ -41,7 +41,7 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
         Response.Cookies.Delete("authorization", new CookieOptions
         {
             HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            SameSite = SameSiteMode.None,
             Secure = true,
             IsEssential = true,
             Path = "/"
