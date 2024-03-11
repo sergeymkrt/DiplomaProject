@@ -1,6 +1,7 @@
 using DiplomaProject.Application.DTOs.Authentication;
 using DiplomaProject.Application.UseCases.Authentication.Commands;
 using DiplomaProject.Application.UseCases.Authentication.Queries;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DiplomaProject.WebApi.Controllers;
@@ -57,14 +58,14 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
         return Ok(await _mediator.Send(new GenerateStrongPasswordQuery()));
     }
 
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("isAuthenticated")]
     public Task<IActionResult> IsAuthenticated()
     {
         return Task.FromResult<IActionResult>(Ok());
     }
 
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("getUser")]
     public async Task<IActionResult> GetUser()
     {
