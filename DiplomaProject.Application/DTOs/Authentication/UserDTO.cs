@@ -8,3 +8,9 @@ public class UserDto(string name, string surName, string userName, string phoneN
     public string PhoneNumber { get; set; } = phoneNumber;
     public string Email { get; set; } = email;
 }
+
+public class ShortUserDto
+{
+    public string Id { get; set; }
+    public string Email { get; set; }
+}

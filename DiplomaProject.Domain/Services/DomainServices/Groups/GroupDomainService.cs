@@ -68,6 +68,12 @@ public class GroupDomainService(
         groupRepository.Remove(group);
     }
 
+    public async Task<Group> GetGroup(long groupId)
+    {
+        var group = await groupRepository.GetByIdAsync(groupId);
+        return group ?? throw new NotFoundException("Group not found");
+    }
+
     public Task<Paginated<Group>> GetGroups(Expression<Func<Group, bool>> predicate = null,
         string search = null,
         List<(string? ColumnName, bool? isAsc)> orderBy = null, int pageNumber = 1,

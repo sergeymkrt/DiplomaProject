@@ -10,6 +10,7 @@ public interface IGroupDomainService
     Task AddUserToGroup(string userId, long groupId, int permissionId);
     Task CreateGroup(string groupName, string description, int accessLevelId, User owner);
     Task DeleteGroup(long groupId, string userId);
+    Task<Group> GetGroup(long groupId);
     Task<Paginated<Group>> GetGroups(Expression<Func<Group, bool>> predicate = null,
         string search = null,
         List<(string? ColumnName, bool? isAsc)> orderBy = null,
