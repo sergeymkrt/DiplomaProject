@@ -37,9 +37,9 @@ public class GroupController(IMediator mediator) : BaseController(mediator)
     public async Task<IActionResult> GetGroups(
         [FromQuery] int pageNumber,
         [FromQuery] int pageSize,
-        [FromQuery] string search,
-        [FromQuery] string orderByColumn,
-        [FromQuery] bool isAsc)
+        [FromQuery] string? search,
+        [FromQuery] string? orderByColumn,
+        [FromQuery] bool isAsc = true)
     {
         return Ok(await _mediator.Send(new GetGroupsQuery(pageNumber, pageSize, search, orderByColumn, isAsc)));
     }
