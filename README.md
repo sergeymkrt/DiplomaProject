@@ -28,11 +28,11 @@ Encryption is handled in several stages.
 - [ ] Verifying the checksum on backend side
 
 ###  Backend to Storage
-- [ ] Generating RSA 2048 Keys (1 pair) for all files
-- [ ] For Each file generating random AES 128-bit key
-- [ ] Encrypting the file with AES
-- [ ] Encrypting the AES key with RSA and Concat(file, key)
-- [ ] Sending the file via SSL to the secure storage (AWS S3 Bucket, Azure blob)
+- [X] Generating RSA 2048 Keys (1 pair) for all files
+- [X] For Each file generating random AES 128-bit key
+- [X] Encrypting the file with AES
+- [X] Encrypting the AES key with RSA and Concat(file, key)
+- [X] Sending the file via SSL to the secure storage (AWS S3 Bucket, Azure blob)
 
 ## Data Backup
 Data Backup will be implemented on database side, using Microsoft Sql Server features. </br>
