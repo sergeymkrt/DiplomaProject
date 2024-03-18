@@ -3,6 +3,7 @@ using DiplomaProject.Application.Exceptions;
 using DiplomaProject.Application.Models;
 using DiplomaProject.Domain.Entities.User;
 using DiplomaProject.Domain.Enums;
+using DiplomaProject.Domain.Events.Authentication;
 using DiplomaProject.Domain.Services.External;
 using Microsoft.AspNetCore.Identity;
 using Directory = DiplomaProject.Domain.AggregatesModel.Directories.Directory;
@@ -14,7 +15,7 @@ public class RegisterUserCommand(RegisterUserDTO dto) : BaseCommand<bool>
 {
     public RegisterUserDTO DTO { get; set; } = dto;
 
-    public class RegisterUserCommandHandler(IMapper mapper, ICurrentUser currentUser, UserManager<User> userManager)
+    public class RegisterUserCommandHandler(IMapper mapper, IMediator mediator, ICurrentUser currentUser, UserManager<User> userManager)
         : BaseCommandHandler<RegisterUserCommand>(currentUser, mapper)
     {
         public override async Task<ResponseModel<bool>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -25,6 +26,7 @@ public class RegisterUserCommand(RegisterUserDTO dto) : BaseCommand<bool>
             if (result.Succeeded)
             {
                 await userManager.AddToRolesAsync(user, [Role.USER.ToString("F")]);
+                await mediator.Publish(new SendVerificationEmailEvent(user.Email), cancellationToken);
                 return ResponseModel<bool>.Create(ResponseCode.Success, true);
             }
             throw new BadRequestException(result.Errors.First().Description);
