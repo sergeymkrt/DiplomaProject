@@ -55,6 +55,12 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
         return Ok(await _mediator.Send(new RegisterUserCommand(registerUser)));
     }
 
+    [HttpPatch("verifyEmail")]
+    public async Task<IActionResult> VerifyEmail(string token, string email)
+    {
+        return Ok(await _mediator.Send(new VerifyEmailCommand(token, email)));
+    }
+
     [HttpDelete("deleteUser")]
     public async Task<IActionResult> DeleteUser(string id)
     {

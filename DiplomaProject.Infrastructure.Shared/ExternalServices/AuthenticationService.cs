@@ -38,4 +38,17 @@ public class AuthenticationService(UserManager<User> userManager, IOptions<JwtCo
         var tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
         return tokenstring;
     }
+
+    public async Task<(bool, IEnumerable<IdentityError>)> VerifyEmail(string token, string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return (false, []);
+        }
+
+        var result = await userManager.ConfirmEmailAsync(user, token);
+
+        return (result.Succeeded, result.Errors);
+    }
 }

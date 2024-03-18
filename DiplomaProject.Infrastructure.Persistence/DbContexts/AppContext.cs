@@ -62,12 +62,19 @@ public class AppContext : IdentityDbContext<User, Role, string>, IUnitOfWork
 
         try
         {
-            var preDomainEvents = GetDomainEvents();
-            var postDomainEvents = GetDomainEvents(onlyPre: false);
+            var domainEvents = ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.DomainEvents is { Count: > 0 })
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+
+            var preDomainEvents = domainEvents.Where(x => !x.IsPostEvent).ToList();
+            var postDomainEvents = domainEvents.Where(x => x.IsPostEvent).ToList();
+
+            await _mediator.DispatchDomainEventsAsync(preDomainEvents);
 
             await SaveChangesAsync(userId);
 
-            await _mediator.DispatchDomainEventsAsync(preDomainEvents);
             await transaction.CommitAsync();
             try
             {
@@ -150,15 +157,15 @@ public class AppContext : IdentityDbContext<User, Role, string>, IUnitOfWork
         }
     }
 
-    private List<INotification> GetDomainEvents(bool onlyPre = true)
+    private List<DomainEvent> GetDomainEvents(bool onlyPre = true)
     {
         var domainEntities = ChangeTracker
             .Entries<Entity>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
 
         var domainEvents = onlyPre
-            ? domainEntities.SelectMany(x => x.Entity.DomainEvents).Where(x => x is PreDomainEvent)
-            : domainEntities.SelectMany(x => x.Entity.DomainEvents).Where(x => x is PostDomainEvent);
+            ? domainEntities.SelectMany(x => x.Entity.DomainEvents).Where(x => !x.IsPostEvent)
+            : domainEntities.SelectMany(x => x.Entity.DomainEvents).Where(x => x.IsPostEvent);
 
         return domainEvents.ToList();
     }

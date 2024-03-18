@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace DiplomaProject.Domain.SeedWork;
 
 public abstract class Entity : ICreator, IModifier
@@ -13,16 +11,16 @@ public abstract class Entity : ICreator, IModifier
     public DateTimeOffset? ModifiedDate { get; set; }
 
 
-    private List<INotification> _domainEvents;
-    public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
+    private List<DomainEvent> _domainEvents;
+    public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents?.AsReadOnly();
 
-    public void AddDomainEvent(INotification eventItem)
+    public void AddDomainEvent(DomainEvent eventItem)
     {
-        _domainEvents ??= new List<INotification>();
+        _domainEvents ??= new List<DomainEvent>();
         _domainEvents.Add(eventItem);
     }
 
-    public void RemoveDomainEvent(INotification eventItem)
+    public void RemoveDomainEvent(DomainEvent eventItem)
     {
         _domainEvents?.Remove(eventItem);
     }
@@ -52,7 +50,7 @@ public abstract class Entity : ICreator, IModifier
 
         if (item.IsTransient() || IsTransient())
             return false;
-        
+
         return item.Id == Id;
     }
 
@@ -65,7 +63,7 @@ public abstract class Entity : ICreator, IModifier
 
             return _requestedHashCode.Value;
         }
-        
+
         return base.GetHashCode();
     }
     public static bool operator ==(Entity left, Entity right)

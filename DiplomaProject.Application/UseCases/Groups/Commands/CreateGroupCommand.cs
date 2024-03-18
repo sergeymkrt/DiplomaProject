@@ -21,6 +21,7 @@ public class CreateGroupCommand(GroupDto dto) : BaseCommand
         {
             var user = await CurrentUser.GetUserWithGroups();
             await groupDomainService.CreateGroup(request.Dto.Name, request.Dto.Description, request.Dto.AccessLevelId, user);
+
             return ResponseModel.Create(ResponseCode.SuccessfullyCreated);
         }
     }

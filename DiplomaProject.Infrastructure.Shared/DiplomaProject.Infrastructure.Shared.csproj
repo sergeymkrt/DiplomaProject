@@ -13,6 +13,8 @@
 
 
     <ItemGroup>
+      <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
+      <PackageReference Include="Azure.Identity" Version="1.10.4" />
       <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
       <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.8.0" />
       <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.0" />

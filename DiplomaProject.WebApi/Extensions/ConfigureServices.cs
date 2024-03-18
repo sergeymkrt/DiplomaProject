@@ -167,6 +167,7 @@ public static class ConfigureServices
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IEncryptionService, EncryptionService>();
         services.AddScoped<IFileManagementService, AzureStorageManagementService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ICurrentUser, CurrentUser>();
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehaviour<,>));
@@ -190,6 +191,7 @@ public static class ConfigureServices
 
         services.Configure<JwtConfig>(configuration.GetSection("JWT"));
         services.Configure<AzureStorageConfig>(configuration.GetSection("AzureStorage"));
+        services.Configure<EmailServiceConfig>(configuration.GetSection("EmailSettings"));
 
         return services;
     }
