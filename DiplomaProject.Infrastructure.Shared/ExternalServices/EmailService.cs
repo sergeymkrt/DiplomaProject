@@ -8,7 +8,15 @@ namespace DiplomaProject.Infrastructure.Shared.ExternalServices;
 
 public class EmailService(IOptions<EmailServiceConfig> emailConfigs) : IEmailService
 {
-    private readonly EmailServiceConfig _emailConfigs = emailConfigs.Value;
+    private readonly EmailServiceConfig _emailConfigs = new()
+    {
+        ClientId = Environment.GetEnvironmentVariable("CLIENT_ID") ?? emailConfigs.Value.ClientId,
+        ClientSecret = Environment.GetEnvironmentVariable("CLIENT_SECRET") ?? emailConfigs.Value.ClientSecret,
+        TenantId = Environment.GetEnvironmentVariable("TENANT_ID") ?? emailConfigs.Value.TenantId,
+        Endpoint = Environment.GetEnvironmentVariable("EMAIL_ENDPOINT") ?? emailConfigs.Value.Endpoint,
+        VerificationLink = Environment.GetEnvironmentVariable("VERIFICATION_LINK") ?? emailConfigs.Value.VerificationLink,
+        From = Environment.GetEnvironmentVariable("EMAIL_FROM") ?? emailConfigs.Value.From
+    };
 
     public async Task SendVerificationEmail(string email, string token)
     {
@@ -18,8 +26,10 @@ public class EmailService(IOptions<EmailServiceConfig> emailConfigs) : IEmailSer
         [
             new EmailAddress(email)
         ]);
-        EmailContent emailContent = new("Verify Email");
-        emailContent.Html = $"<html><body><p>Click <a href='{_emailConfigs.VerificationLink}{token}&email={email}'>here</a> to verify your email</p></body></html>";
+        EmailContent emailContent = new("Verify Email")
+        {
+            Html = $"<html><body><p>Click <a href='{_emailConfigs.VerificationLink}{token}&email={email}'>here</a> to verify your email</p></body></html>"
+        };
 
         EmailMessage emailMessage = new(_emailConfigs.From, emailRecipients, emailContent);
 
@@ -40,6 +50,7 @@ public class EmailService(IOptions<EmailServiceConfig> emailConfigs) : IEmailSer
         ]);
         EmailContent emailContent = new("Reset Password");
         emailContent.Html = $"<html><body><p>Click <a href='{_emailConfigs.VerificationLink}{token}'>here</a> to reset your password</p></body></html>";
+
 
         EmailMessage emailMessage = new(_emailConfigs.From, emailRecipients, emailContent);
 
