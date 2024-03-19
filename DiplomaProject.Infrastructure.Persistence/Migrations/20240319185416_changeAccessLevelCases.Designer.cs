@@ -4,6 +4,7 @@ using DiplomaProject.Infrastructure.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiplomaProject.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20240319185416_changeAccessLevelCases")]
+    partial class changeAccessLevelCases
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,6 +333,9 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
                     b.Property<int>("AccessLevelId")
                         .HasColumnType("int");
 
@@ -387,8 +393,6 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccessLevelId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -735,19 +739,11 @@ namespace DiplomaProject.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("DiplomaProject.Domain.Entities.User.User", b =>
                 {
-                    b.HasOne("DiplomaProject.Domain.Shared.Lookups.AccessLevel", "AccessLevel")
-                        .WithMany()
-                        .HasForeignKey("AccessLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DiplomaProject.Domain.AggregatesModel.Directories.Directory", "PersonalDirectory")
                         .WithOne("PersonalOwner")
                         .HasForeignKey("DiplomaProject.Domain.Entities.User.User", "PersonalDirectoryId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
-
-                    b.Navigation("AccessLevel");
 
                     b.Navigation("PersonalDirectory");
                 });

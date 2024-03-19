@@ -8,12 +8,6 @@ public class TransactionBehaviour<TRequest, TResponse>(AppContext dbContext, ICu
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var type = typeof(TRequest);
-        if (type.BaseType.GetGenericTypeDefinition() == typeof(BaseQuery<>))
-        {
-            return await next();
-        }
-
         var response = default(TResponse);
 
         try

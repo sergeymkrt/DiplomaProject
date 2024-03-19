@@ -1,4 +1,5 @@
 ﻿using DiplomaProject.Application.Models;
+using DiplomaProject.Domain.AggregatesModel.Keys;
 using DiplomaProject.Domain.Enums;
 using DiplomaProject.Domain.Services.DomainServices.Files;
 using DiplomaProject.Domain.Services.DomainServices.Keys;
@@ -8,11 +9,11 @@ using File = DiplomaProject.Domain.AggregatesModel.FileAggregate.File;
 
 namespace DiplomaProject.Application.UseCases.Files.Commands;
 
-public class UploadFileCommand(IFormFile file, long keyId, long directoryId) : BaseCommand<File>
+public class UploadFileCommand(IFormFile file, long? directoryId) : BaseCommand<File>
 {
     public IFormFile File { get; set; } = file;
-    public long KeyId { get; set; } = keyId;
-    public long DirectoryId { get; set; } = directoryId;
+    // public long KeyId { get; set; } = keyId;
+    public long? DirectoryId { get; set; } = directoryId;
 
     public class UploadFileCommandHandler(
         IMapper mapper,
@@ -23,13 +24,22 @@ public class UploadFileCommand(IFormFile file, long keyId, long directoryId) : B
     {
         public override async Task<ResponseModel<File>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
         {
+            var key = await keyDomainService.CreateKey(request.File.FileName);
+            var user = await CurrentUser.GetUserWithGroups();
+            if (!request.DirectoryId.HasValue)
+            {
+                 request.DirectoryId = user.PersonalDirectoryId;
+            }
+
+
             var fileObject = await fileDomainService.CreateFileAsync(
                 request.File.FileName,
                 request.File.ContentType,
-                request.KeyId,
-                request.DirectoryId);
+                // request.KeyId,
+                key,
+                request.DirectoryId.GetValueOrDefault());
 
-            var key = await keyDomainService.GetKeyById(request.KeyId);
+            // var key = await keyDomainService.GetKeyById(request.KeyId);
             fileObject.SetKey(key);
             fileObject.FileName = request.File.FileName;
             fileObject.FileSize = request.File.Length;

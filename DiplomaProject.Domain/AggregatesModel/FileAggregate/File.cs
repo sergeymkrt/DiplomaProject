@@ -16,11 +16,12 @@ public class File : Entity, IAggregateRoot
         DirectoryId = directoryId;
     }
 
-    public File(string filePath, string mimeType, long keyId, long directoryId)
+    public File(string filePath, string mimeType,Key key, long directoryId)
     {
         FilePath = filePath;
         MimeType = mimeType;
-        KeyId = keyId;
+        // KeyId = keyId;
+        Key = key;
         DirectoryId = directoryId;
     }
 

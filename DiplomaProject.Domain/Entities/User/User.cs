@@ -2,6 +2,7 @@ using DiplomaProject.Domain.AggregatesModel.Groups;
 using DiplomaProject.Domain.AggregatesModel.Keys;
 using DiplomaProject.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using AccessLevel = DiplomaProject.Domain.Shared.Lookups.AccessLevel;
 using Directory = DiplomaProject.Domain.AggregatesModel.Directories.Directory;
 using File = DiplomaProject.Domain.AggregatesModel.FileAggregate.File;
 
@@ -13,10 +14,10 @@ public class User : IdentityUser
     public string? SurName { get; set; }
 
     public int AccessLevelId { get; set; }
-    public AccessLevel AccessLevel { get; set; }
+    public virtual AccessLevel AccessLevel { get; set; }
 
     public long PersonalDirectoryId { get; set; }
-    public Directory PersonalDirectory { get; set; }
+    public virtual Directory PersonalDirectory { get; set; }
 
     public ICollection<UserGroup> UserGroups { get; set; } = [];
     public ICollection<File> Files { get; set; } = [];

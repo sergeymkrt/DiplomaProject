@@ -1,11 +1,12 @@
-﻿using DiplomaProject.Domain.FileManagement;
+﻿using DiplomaProject.Domain.AggregatesModel.Keys;
+using DiplomaProject.Domain.FileManagement;
 using File = DiplomaProject.Domain.AggregatesModel.FileAggregate.File;
 
 namespace DiplomaProject.Domain.Services.DomainServices.Files;
 
 public interface IFileDomainService
 {
-    Task<File> CreateFileAsync(string fileName, string mimeType, long keyId, long directoryId);
+    Task<File> CreateFileAsync(string fileName, string mimeType, Key key, long directoryId);
     Task<string> UploadFileAsync(Stream stream, File file);
     Task DeleteFileAsync(long fileId);
     Task<FileResponse> DownloadFileAsync(long fileId);

@@ -1,4 +1,5 @@
-﻿using DiplomaProject.Domain.Extensions;
+﻿using DiplomaProject.Domain.AggregatesModel.Keys;
+using DiplomaProject.Domain.Extensions;
 using DiplomaProject.Domain.FileManagement;
 using DiplomaProject.Domain.Services.Encryption;
 using DiplomaProject.Domain.Services.External;
@@ -11,9 +12,9 @@ public class FileDomainService(
     IEncryptionService encryptionService,
     IFileManagementService fileManagementService) : IFileDomainService
 {
-    public async Task<File> CreateFileAsync(string fileName, string mimeType, long keyId, long directoryId)
+    public async Task<File> CreateFileAsync(string fileName, string mimeType,Key key, long directoryId)
     {
-        var file = new File(fileName, mimeType, keyId, directoryId);
+        var file = new File(fileName, mimeType, key, directoryId);
         await fileRepository.AddAsync(file);
         return file;
     }
@@ -26,8 +27,8 @@ public class FileDomainService(
         }
 
         var streamAsBytes = await stream.ToByteArrayAsync();
-        var encryptedData = await encryptionService.EncryptAsync(streamAsBytes, file.Key);
-        var encryptedStream = new MemoryStream(encryptedData);
+        // var encryptedData = await encryptionService.EncryptAsync(streamAsBytes, file.Key);
+        var encryptedStream = new MemoryStream(streamAsBytes);
         return await fileManagementService.WriteFileAsync(encryptedStream, file.FileName);
     }
 

@@ -9,9 +9,9 @@ namespace DiplomaProject.WebApi.Controllers;
 public class FilesController(IMediator mediator) : BaseController(mediator)
 {
     [HttpPost]
-    public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromQuery] long keyId, [FromQuery] long directoryId)
+    public async Task<IActionResult> UploadFile([FromForm] IFormFile file,[FromQuery] long? directoryId)
     {
-        return Ok(await _mediator.Send(new UploadFileCommand(file, keyId, directoryId)));
+        return Ok(await _mediator.Send(new UploadFileCommand(file, directoryId)));
     }
 
     [HttpGet]
