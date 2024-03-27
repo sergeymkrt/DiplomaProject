@@ -1,5 +1,4 @@
 ﻿using DiplomaProject.Application.Models;
-using DiplomaProject.Domain.AggregatesModel.Keys;
 using DiplomaProject.Domain.Enums;
 using DiplomaProject.Domain.Services.DomainServices.Files;
 using DiplomaProject.Domain.Services.DomainServices.Keys;
@@ -25,10 +24,10 @@ public class UploadFileCommand(IFormFile file, long? directoryId) : BaseCommand<
         public override async Task<ResponseModel<File>> Handle(UploadFileCommand request, CancellationToken cancellationToken)
         {
             var key = await keyDomainService.CreateKey(request.File.FileName);
-            var user = await CurrentUser.GetUserWithGroups();
+            var user = await CurrentUser.GetUserWithRelations();
             if (!request.DirectoryId.HasValue)
             {
-                 request.DirectoryId = user.PersonalDirectoryId;
+                request.DirectoryId = user.PersonalDirectoryId;
             }
 
 

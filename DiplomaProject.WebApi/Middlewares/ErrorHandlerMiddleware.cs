@@ -38,10 +38,17 @@ public class ErrorHandlerMiddleware
                         e.Message);
                     break;
                 case BadRequestException e:
-                    _logger.LogError(e,e.Message);
+                    _logger.LogError(e, e.Message);
                     await InvokeException(
                         context,
                         HttpStatusCode.BadRequest,
+                        e.Message);
+                    break;
+                case UnauthorizedAccessException e:
+                    _logger.LogWarning(e.Message);
+                    await InvokeException(
+                        context,
+                        HttpStatusCode.Unauthorized,
                         e.Message);
                     break;
                 case NotFoundException e:

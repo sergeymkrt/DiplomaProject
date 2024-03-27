@@ -1,4 +1,6 @@
+using DiplomaProject.Domain.AggregatesModel.BlackLists;
 using DiplomaProject.Domain.Entities.User;
+using DiplomaProject.Domain.Models;
 using DiplomaProject.Infrastructure.Shared.Configs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -9,9 +11,14 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace DiplomaProject.Infrastructure.Shared.ExternalServices;
 
-public class AuthenticationService(UserManager<User> userManager, IOptions<JwtConfig> config) : IAuthenticationService
+public class AuthenticationService(IBlackListRepository blackListRepository, UserManager<User> userManager, IOptions<JwtConfig> config) : IAuthenticationService
 {
-    public async Task<string> GenerateToken(User user)
+    public Task<bool> IsTokenBlackListedAsync(string token)
+    {
+        return blackListRepository.AnyAsync(x => x.Token == token);
+    }
+
+    public async Task<TokenModel> GenerateToken(User user)
     {
         var userRoles = await userManager.GetRolesAsync(user);
 
@@ -31,12 +38,38 @@ public class AuthenticationService(UserManager<User> userManager, IOptions<JwtCo
         var token = new JwtSecurityToken(
             config.Value.ValidIssuer,
             config.Value.ValidAudience,
-            expires: DateTime.Now.AddHours(config.Value.AccessTokenValidityInHours),
+            expires: DateTime.Now.AddMinutes(config.Value.AccessTokenValidityInMinutes),
             claims: authClaims,
             signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha512)
         );
+
+        var refreshToken = new JwtSecurityToken(
+            config.Value.ValidIssuer,
+            config.Value.ValidAudience,
+            expires: DateTime.Now.AddDays(config.Value.RefreshTokenValidityInDays),
+            claims: authClaims,
+            signingCredentials: new SigningCredentials(securityKey, SecurityAlgorithms.EcdsaSha512)
+        );
+
         var tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
-        return tokenstring;
+        var refreshTokenString = new JwtSecurityTokenHandler().WriteToken(refreshToken);
+        return new TokenModel
+        {
+            AccessToken = tokenstring,
+            RefreshToken = refreshTokenString,
+            AccessTokenExpiresIn = config.Value.AccessTokenValidityInMinutes * 60,
+            RefreshTokenExpiresIn = config.Value.RefreshTokenValidityInDays * 24 * 60 * 60
+        };
+    }
+
+    public Task<string?> GetIdFromRefreshTokenAsync(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var tokenS = handler.ReadJwtToken(token);
+
+        return Task.FromResult(tokenS.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+
+        // return handler.ReadToken(token) is JwtSecurityToken tokenS ? Task.FromResult(tokenS.ValidTo > DateTime.Now) : Task.FromResult(false);
     }
 
     public async Task<(bool, IEnumerable<IdentityError>)> VerifyEmail(string token, string email)

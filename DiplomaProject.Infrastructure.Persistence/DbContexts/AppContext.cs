@@ -1,3 +1,4 @@
+using DiplomaProject.Domain.AggregatesModel.BlackLists;
 using DiplomaProject.Domain.AggregatesModel.Groups;
 using DiplomaProject.Domain.AggregatesModel.Keys;
 using DiplomaProject.Domain.Entities.User;
@@ -19,6 +20,8 @@ public class AppContext : IdentityDbContext<User, Role, string>, IUnitOfWork
     public DbSet<Directory> Directories { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<UserGroup> UserGroups { get; set; }
+
+    public DbSet<BlackList> BlackLists { get; set; }
     #endregion
 
     #region Lookups

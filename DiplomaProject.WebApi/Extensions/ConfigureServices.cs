@@ -1,5 +1,6 @@
 using DiplomaProject.Application;
 using DiplomaProject.Application.Extensions;
+using DiplomaProject.Domain.AggregatesModel.BlackLists;
 using DiplomaProject.Domain.AggregatesModel.Directories;
 using DiplomaProject.Domain.AggregatesModel.FileAggregate;
 using DiplomaProject.Domain.AggregatesModel.Groups;
@@ -103,6 +104,7 @@ public static class ConfigureServices
         services.AddScoped<IKeyRepository, KeyRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();
         services.AddScoped<IDirectoryRepository, DirectoryRepository>();
+        services.AddScoped<IBlackListRepository, BlackListRepository>();
 
         return services;
     }

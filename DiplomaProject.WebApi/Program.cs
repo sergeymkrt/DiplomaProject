@@ -18,6 +18,7 @@ await app.UseDatabaseMigration();
 await app.UseInitialDataSeeding();
 
 app.UseGlobalExceptionHandler();
+app.UseRefreshTokenValidatorMiddleware();
 
 app.UseSwagger();
 app.UseSwaggerUI();

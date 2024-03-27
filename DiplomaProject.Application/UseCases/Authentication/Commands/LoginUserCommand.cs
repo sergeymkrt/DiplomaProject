@@ -1,14 +1,14 @@
 using DiplomaProject.Application.DTOs.Authentication;
-using DiplomaProject.Application.Exceptions;
 using DiplomaProject.Application.Models;
 using DiplomaProject.Domain.Entities.User;
 using DiplomaProject.Domain.Exceptions;
+using DiplomaProject.Domain.Models;
 using DiplomaProject.Domain.Services.External;
 using Microsoft.AspNetCore.Identity;
 
 namespace DiplomaProject.Application.UseCases.Authentication.Commands;
 
-public class LoginUserCommand(AuthUserDto dto) : BaseCommand<string>
+public class LoginUserCommand(AuthUserDto dto) : BaseCommand<TokenModel>
 {
     public AuthUserDto DTO { get; set; } = dto;
 
@@ -19,7 +19,8 @@ public class LoginUserCommand(AuthUserDto dto) : BaseCommand<string>
         IAuthenticationService authenticationService)
         : BaseCommandHandler<LoginUserCommand>(currentUser, mapper)
     {
-        public override async Task<ResponseModel<string>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+        public override async Task<ResponseModel<TokenModel>> Handle(LoginUserCommand request,
+            CancellationToken cancellationToken)
         {
             var user = await userManager.FindByNameAsync(request.DTO.UserName);
             if (user is null)
@@ -29,12 +30,29 @@ public class LoginUserCommand(AuthUserDto dto) : BaseCommand<string>
 
             if (await userManager.CheckPasswordAsync(user, request.DTO.Password))
             {
-                return ResponseModel<string>.Create(await authenticationService.GenerateToken(user));
+                var tokenModel = await authenticationService.GenerateToken(user);
+
+                await currentUser.UpdateCurrentUserContext(user);
+                user = await currentUser.GetUserWithRelations(isTracking: true);
+
+                var session = user.UserSessions.FirstOrDefault(x => x.RefreshToken == tokenModel.RefreshToken);
+                if (session != null)
+                {
+                    session.RefreshToken = tokenModel.RefreshToken;
+                    session.ExpirationDate = DateTimeOffset.Now.AddSeconds(tokenModel.RefreshTokenExpiresIn);
+                    session.LastLogin = DateTimeOffset.Now;
+                }
+                else
+                {
+                    var expiresIn = DateTimeOffset.Now.AddSeconds(tokenModel.RefreshTokenExpiresIn);
+                    var currentUserSession = await CurrentUser.GetCurrentUserSession(tokenModel.RefreshToken, expiresIn);
+                    user.UserSessions.Add(currentUserSession);
+                }
+
+                return ResponseModel<TokenModel>.Create(tokenModel);
             }
-            else
-            {
-                throw new BadRequestException("Invalid password");
-            }
+
+            throw new UnauthorizedAccessException("Invalid password");
         }
     }
 }

@@ -21,19 +21,66 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
             Path = "/"
         });
 
-        var token = await _mediator.Send(new LoginUserCommand(loginUser));
-        var tokenExpiration = int.Parse(configuration["Jwt:AccessTokenValidityInHours"]);
-        Response.Cookies.Append("authorization", token.Data, new CookieOptions
+        var tokenModelResponse = await _mediator.Send(new LoginUserCommand(loginUser));
+        // var tokenExpiration = int.Parse(configuration["Jwt:AccessTokenValidityInHours"]);
+
+        Response.Cookies.Append("authorization", tokenModelResponse.Data.AccessToken, new CookieOptions
         {
             HttpOnly = true,
             SameSite = SameSiteMode.None,
             Secure = true,
             IsEssential = true,
-            Expires = DateTime.Now.AddHours(tokenExpiration),
+            Expires = DateTime.Now.AddSeconds(tokenModelResponse.Data.AccessTokenExpiresIn),
             Path = "/"
         });
+
+        Response.Cookies.Append("refreshToken", tokenModelResponse.Data.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.None,
+            Secure = true,
+            IsEssential = true,
+            Expires = DateTime.Now.AddSeconds(tokenModelResponse.Data.RefreshTokenExpiresIn),
+            Path = "/"
+        });
+
         return Ok();
     }
+
+    [HttpPatch("refresh")]
+    public async Task<IActionResult> Refresh()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            return Unauthorized();
+        }
+
+        var tokenModelResponse = await _mediator.Send(new RefreshTokenCommand(refreshToken));
+
+        Response.Cookies.Append("authorization", tokenModelResponse.Data.AccessToken, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.None,
+            Secure = true,
+            IsEssential = true,
+            Expires = DateTime.Now.AddSeconds(tokenModelResponse.Data.AccessTokenExpiresIn),
+            Path = "/"
+        });
+
+        Response.Cookies.Append("refreshToken", tokenModelResponse.Data.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.None,
+            Secure = true,
+            IsEssential = true,
+            Expires = DateTime.Now.AddSeconds(tokenModelResponse.Data.RefreshTokenExpiresIn),
+            Path = "/"
+        });
+
+        return Ok();
+    }
+
 
     [HttpDelete("logout")]
     public Task<IActionResult> Logout()
@@ -85,5 +132,19 @@ public class AuthenticationController(IMediator mediator, IConfiguration configu
     public async Task<IActionResult> GetUser()
     {
         return Ok(await _mediator.Send(new GetUserQuery()));
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpDelete("deleteUserSession")]
+    public async Task<IActionResult> DeleteUserSession(Guid id)
+    {
+        return Ok(await _mediator.Send(new DeleteUserSessionCommand(id)));
+    }
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpGet("userSessions")]
+    public async Task<IActionResult> GetUserSessions()
+    {
+        return Ok(await _mediator.Send(new GetUserSessionsQuery()));
     }
 }

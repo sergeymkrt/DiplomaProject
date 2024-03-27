@@ -19,7 +19,7 @@ public class CreateGroupCommand(GroupDto dto) : BaseCommand
         public override async Task<ResponseModel> Handle(CreateGroupCommand request,
             CancellationToken cancellationToken)
         {
-            var user = await CurrentUser.GetUserWithGroups();
+            var user = await CurrentUser.GetUserWithRelations();
             await groupDomainService.CreateGroup(request.Dto.Name, request.Dto.Description, request.Dto.AccessLevelId, user);
 
             return ResponseModel.Create(ResponseCode.SuccessfullyCreated);

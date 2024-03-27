@@ -25,7 +25,7 @@ public class GetDirectoriesQuery(int pageNumber,
         public override async Task<ResponseModel<Paginated<DirectoryDto>>> Handle(GetDirectoriesQuery request,
             CancellationToken cancellationToken)
         {
-            var user = await CurrentUser.GetUserWithGroups();
+            var user = await CurrentUser.GetUserWithRelations();
             var userGroupIds = user.UserGroups.Select(g => g.GroupId).ToList();
 
             var predicate = PredicateBuilder.New<Directory>(true);
